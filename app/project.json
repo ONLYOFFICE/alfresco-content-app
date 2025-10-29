@@ -84,6 +84,16 @@
             "glob": "**/*",
             "input": "projects/aca-content/assets",
             "output": "./assets"
+          },
+          {
+            "glob": "onlyoffice-alfresco-extension.json",
+            "input": "projects/onlyoffice-alfresco-extension/assets",
+            "output": "./assets/plugins"
+          },
+          {
+            "glob": "**/*",
+            "input": "projects/onlyoffice-alfresco-extension/assets",
+            "output": "./assets/onlyoffice-alfresco-extension"
           }
         ],
         "styles": [
