@@ -1,0 +1,24 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Install NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: 'https://registry.npmjs.org/'
+      - name: Install dependencies
+        run: npm install
+      - name: Build project
+        run: npx nx run @onlyoffice/alfresco-extension:build
+      - name: Publish to npm
+        run: npx nx run @onlyoffice/alfresco-extension:nx-release-publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
