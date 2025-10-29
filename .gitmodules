@@ -1,0 +1,4 @@
+[submodule "projects/onlyoffice-alfresco-extension"]
+	path = projects/onlyoffice-alfresco-extension
+	url = https://github.com/ONLYOFFICE/onlyoffice-alfresco-extension.git
+	branch = develop
