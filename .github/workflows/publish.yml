@@ -19,8 +19,10 @@ jobs:
         with:
           node-version: 22
           registry-url: 'https://registry.npmjs.org/'
+      - name: Upgrade npm
+        run: npm install -g npm@11
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Build project
         run: npx nx run @onlyoffice/alfresco-extension:build
       - name: Publish to npm
