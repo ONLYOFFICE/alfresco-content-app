@@ -6,6 +6,9 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6
@@ -22,5 +25,3 @@ jobs:
         run: npx nx run @onlyoffice/alfresco-extension:build
       - name: Publish to npm
         run: npx nx run @onlyoffice/alfresco-extension:nx-release-publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
