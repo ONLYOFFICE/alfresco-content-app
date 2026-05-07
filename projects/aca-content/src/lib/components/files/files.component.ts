@@ -29,7 +29,7 @@ import {
   PaginationComponent,
   ShowHeaderMode
 } from '@alfresco/adf-core';
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewEncapsulation, inject } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Node, NodeEntry, PathElement } from '@alfresco/js-api';
 import { NodeActionsService } from '../../services/node-actions.service';
@@ -50,6 +50,7 @@ import {
   DocumentListComponent,
   FileUploadEvent,
   FilterSearch,
+  SearchHeaderQueryBuilderService,
   ShareDataRow,
   UploadDragAreaComponent
 } from '@alfresco/adf-content-services';
@@ -61,6 +62,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SearchAiInputContainerComponent } from '../knowledge-retrieval/search-ai/search-ai-input-container/search-ai-input-container.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
+import { extractFiltersFromEncodedQuery } from '../../utils/aca-search-utils';
 
 @Component({
   imports: [
@@ -90,6 +92,11 @@ import { HttpErrorResponse } from '@angular/common/http';
   selector: 'aca-files'
 })
 export class FilesComponent extends PageComponent implements OnInit, OnDestroy {
+  private readonly contentApi = inject(ContentApiService);
+  private readonly nodeActionsService = inject(NodeActionsService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly queryBuilderService = inject(SearchHeaderQueryBuilderService);
+
   isValidPath = true;
   isAdmin = false;
   selectedNode: NodeEntry;
@@ -101,16 +108,11 @@ export class FilesComponent extends PageComponent implements OnInit, OnDestroy {
   private nodePath: PathElement[];
   private _errorTranslationKey = 'APP.MESSAGES.ERRORS.MISSING_CONTENT';
 
+  @Input()
+  navigationPath = '/personal-files';
+
   get errorTranslationKey(): string {
     return this._errorTranslationKey;
-  }
-
-  constructor(
-    private readonly contentApi: ContentApiService,
-    private readonly nodeActionsService: NodeActionsService,
-    private readonly route: ActivatedRoute
-  ) {
-    super();
   }
 
   ngOnInit() {
@@ -120,8 +122,12 @@ export class FilesComponent extends PageComponent implements OnInit, OnDestroy {
 
     this.title = data.title;
 
-    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((queryMap: Params) => {
-      this.queryParams = queryMap.params;
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((queryMap) => {
+      this.queryParams = extractFiltersFromEncodedQuery(queryMap?.get('q'));
+      this.queryBuilderService.populateFilters.next(this.queryParams);
+      if (!this.queryParams) {
+        this.queryBuilderService.resetActiveFilters();
+      }
     });
     this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(({ folderId }: Params) => {
       const nodeId = folderId || data.defaultNodeId;
@@ -136,7 +142,7 @@ export class FilesComponent extends PageComponent implements OnInit, OnDestroy {
             if (node?.entry?.isFolder) {
               void this.updateCurrentNode(node.entry);
             } else {
-              void this.router.navigate(['/personal-files', node.entry.parentId], {
+              void this.router.navigate([this.navigationPath, node.entry.parentId], {
                 replaceUrl: true
               });
             }
@@ -384,7 +390,6 @@ export class FilesComponent extends PageComponent implements OnInit, OnDestroy {
       void this.router.navigate(['.'], { relativeTo: this.route });
       this.isFilterHeaderActive = false;
       this.showHeader = ShowHeaderMode.Data;
-      this.onAllFilterCleared();
     }
   }
 

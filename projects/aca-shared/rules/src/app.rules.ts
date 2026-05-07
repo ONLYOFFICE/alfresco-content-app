@@ -193,7 +193,7 @@ export const hasSelection = (context: RuleContext): boolean => !context.selectio
  * JSON ref: `app.navigation.folder.canCreate`
  */
 export function canCreateFolder(context: AcaRuleContext): boolean {
-  if (navigation.isPersonalFiles(context) || navigation.isLibraryContent(context)) {
+  if (navigation.isPersonalFiles(context) || navigation.isLibraryContent(context) || navigation.isRepositoryView(context)) {
     const { currentFolder } = context.navigation;
 
     if (currentFolder) {
@@ -483,6 +483,60 @@ export function canOpenWithOffice(context: AcaRuleContext): boolean {
   return context.permissions.check(file, ['update']);
 }
 
+/**
+ * Checks if user savedSearches are supported by current ACS version.
+ * JSON ref: `isPreferencesApiAvailable`
+ */
+export const isPreferencesApiAvailable = createVersionRule('25.1.0');
+
+/**
+ * Checks if node info modal is supported by current ACS version.
+ * JSON ref: `isNodeInfoAvailable`
+ */
+export const isNodeInfoAvailable = createVersionRule('23.4.0');
+
+/**
+ * Checks if bulk update feature for legal holds is supported by current ACS version.
+ * JSON ref: `isBulkActionsAvailable`
+ */
+export const isBulkActionsAvailable = createVersionRule('23.3.0');
+
+/**
+ * Partially applies minimal version of a feature against a core compatibility evaluation.
+ * @param minimalVersion The minimal version to check against.
+ */
+export function createVersionRule(minimalVersion: string): (context: RuleContext) => boolean {
+  return (context: RuleContext): boolean => {
+    const acsVersion = context.repository.version?.display?.split(' ')[0];
+    return isVersionCompatible(acsVersion, minimalVersion);
+  };
+}
+
+function isVersionCompatible(currentVersion: string, minimalVersion: string): boolean {
+  if (!currentVersion || !minimalVersion) {
+    return false;
+  }
+
+  const currentParts = currentVersion.split('.').map(Number);
+  const minimalParts = minimalVersion.split('.').map(Number);
+  const maxLength = Math.max(currentParts.length, minimalParts.length);
+
+  for (let i = 0; i < maxLength; i++) {
+    const currentSegment = currentParts[i] ?? 0;
+    const minimalSegment = minimalParts[i] ?? 0;
+
+    if (currentSegment > minimalSegment) {
+      return true;
+    }
+
+    if (currentSegment < minimalSegment) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 export function isSmartFolder(context: RuleContext): boolean {
   if (!context.selection?.isEmpty) {
     const node = context.selection.first;
@@ -502,7 +556,24 @@ export const areCategoriesEnabled = (context: AcaRuleContext): boolean => contex
 export const canDisplayKnowledgeRetrievalButton = (context: AcaRuleContext): boolean =>
   context.appConfig.get('plugins.knowledgeRetrievalEnabled', false) &&
   (navigation.isPersonalFiles(context) ||
+    navigation.isRepositoryView(context) ||
     navigation.isSharedFiles(context) ||
     navigation.isRecentFiles(context) ||
     navigation.isFavorites(context) ||
     ((navigation.isSearchResults(context) || navigation.isLibraryContent(context)) && !navigation.isLibraries(context)));
+
+export const isSSOEnabled = (context: AcaRuleContext): boolean => context.appConfig.get('authType') === 'OAUTH';
+
+/**
+ * Checks if node contains checked out aspect.
+ * JSON ref: `app.selection.isCheckedOut`
+ *
+ * @param context Rule execution context
+ */
+export const isCheckedOut = (context: RuleContext): boolean => {
+  if (!context.selection?.isEmpty) {
+    const nodeAspects = context.selection.first.entry?.aspectNames ?? [];
+    return nodeAspects.includes('cm:checkedOut');
+  }
+  return false;
+};

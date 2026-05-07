@@ -23,10 +23,10 @@
  */
 
 import * as app from './app.rules';
-import { getFileExtension } from './app.rules';
+import { createVersionRule, getFileExtension, isPreferencesApiAvailable, isNodeInfoAvailable, isBulkActionsAvailable } from './app.rules';
 import { TestRuleContext } from './test-rule-context';
 import { NodeEntry, RepositoryInfo, StatusInfo } from '@alfresco/js-api';
-import { ProfileState } from '@alfresco/adf-extensions';
+import { ProfileState, RuleContext } from '@alfresco/adf-extensions';
 import { AppConfigService } from '@alfresco/adf-core';
 
 describe('app.evaluators', () => {
@@ -518,6 +518,10 @@ describe('app.evaluators', () => {
       {
         pageName: 'library content',
         pageUrl: '/libraries/some-id'
+      },
+      {
+        pageName: 'repository view',
+        pageUrl: '/repository'
       }
     ].forEach((testCase) => {
       testCanDisplayKnowledgeRetrievalButton(
@@ -863,7 +867,7 @@ describe('app.evaluators', () => {
       expect(app.canCreateFolder(context)).toBeFalse();
     });
 
-    it('should return false when user is outside personal files or libraries', () => {
+    it('should return false when user is outside personal files, libraries or repository view', () => {
       context.appConfig = { get: () => true } as any;
       context.navigation.url = '/favorite/test';
       expect(app.canCreateFolder(context)).toBeFalse();
@@ -889,6 +893,9 @@ describe('app.evaluators', () => {
       context.navigation.url = '/personal-files/test';
       context.navigation.currentFolder = {} as any;
       context.permissions = { check: () => true };
+      expect(app.canCreateFolder(context)).toBeTrue();
+
+      context.navigation.url = '/repository/test';
       expect(app.canCreateFolder(context)).toBeTrue();
     });
 
@@ -1194,6 +1201,144 @@ describe('app.evaluators', () => {
 
       context.selection.first = { entry: { isFolder: true, aspectNames: ['smf:systemConfigSmartFolder'] } } as any;
       expect(app.isSmartFolder(context)).toBeTrue();
+    });
+  });
+
+  describe('isCheckedOut', () => {
+    it('should return false when there is no selection', () => {
+      context.selection.isEmpty = true;
+      expect(app.isCheckedOut(context)).toBeFalse();
+    });
+
+    it('should return false when selected node does not have checked out aspect', () => {
+      context.selection.isEmpty = false;
+      context.selection.first = { entry: { aspectNames: ['test'] } } as any;
+      expect(app.isCheckedOut(context)).toBeFalse();
+    });
+
+    it('should return true when selected node contains checked out aspect', () => {
+      context.selection.isEmpty = false;
+      context.selection.first = { entry: { aspectNames: ['cm:checkedOut'] } } as any;
+      expect(app.isCheckedOut(context)).toBeTrue();
+    });
+  });
+
+  describe('isSSOEnabled', () => {
+    it('should return true if sso is enabled', () => {
+      context.appConfig = { get: () => 'OAUTH' } as any;
+      expect(app.isSSOEnabled(context)).toBe(true);
+    });
+
+    it('should return false if sso is not enabled', () => {
+      context.appConfig = { get: () => 'basic' } as any;
+      expect(app.isSSOEnabled(context)).toBe(false);
+    });
+  });
+});
+
+describe('Versions compatibility', () => {
+  function makeContext(versionDisplay?: string): RuleContext {
+    return {
+      repository: {
+        version: versionDisplay ? { display: versionDisplay } : undefined
+      }
+    } as RuleContext;
+  }
+
+  describe('isPreferencesApiAvailable', () => {
+    it('should return true if ACS version is equal to minimal version', () => {
+      expect(isPreferencesApiAvailable(makeContext('25.1.0'))).toBe(true);
+    });
+
+    it('should return true if ACS version is greater than minimal version', () => {
+      expect(isPreferencesApiAvailable(makeContext('25.2.0'))).toBe(true);
+      expect(isPreferencesApiAvailable(makeContext('26.0.0'))).toBe(true);
+    });
+
+    it('should return false if ACS version is less than minimal version', () => {
+      expect(isPreferencesApiAvailable(makeContext('24.4.0'))).toBe(false);
+      expect(isPreferencesApiAvailable(makeContext('25.0.9'))).toBe(false);
+    });
+
+    it('should return false if ACS version is missing', () => {
+      expect(isPreferencesApiAvailable(makeContext())).toBe(false);
+      expect(isPreferencesApiAvailable({ repository: {} } as any)).toBe(false);
+    });
+  });
+
+  describe('isNodeInfoAvailable', () => {
+    it('should return true if ACS version is equal to minimal version', () => {
+      expect(isNodeInfoAvailable(makeContext('25.1.0'))).toBe(true);
+    });
+
+    it('should return true if ACS version is greater than minimal version', () => {
+      expect(isNodeInfoAvailable(makeContext('25.2.0'))).toBe(true);
+      expect(isNodeInfoAvailable(makeContext('26.0.0'))).toBe(true);
+    });
+
+    it('should return false if ACS version is less than minimal version', () => {
+      expect(isNodeInfoAvailable(makeContext('22.0.0'))).toBe(false);
+      expect(isNodeInfoAvailable(makeContext('23.2.0'))).toBe(false);
+    });
+
+    it('should return false if ACS version is missing', () => {
+      expect(isNodeInfoAvailable(makeContext())).toBe(false);
+      expect(isNodeInfoAvailable({ repository: {} } as any)).toBe(false);
+    });
+  });
+
+  describe('isBulkActionsAvailable', () => {
+    it('should return true if ACS version is equal to minimal version', () => {
+      expect(isBulkActionsAvailable(makeContext('25.1.0'))).toBe(true);
+    });
+
+    it('should return true if ACS version is greater than minimal version', () => {
+      expect(isBulkActionsAvailable(makeContext('25.2.0'))).toBe(true);
+      expect(isBulkActionsAvailable(makeContext('26.0.0'))).toBe(true);
+    });
+
+    it('should return false if ACS version is less than minimal version', () => {
+      expect(isBulkActionsAvailable(makeContext('22.0.0'))).toBe(false);
+      expect(isBulkActionsAvailable(makeContext('23.2.0'))).toBe(false);
+    });
+
+    it('should return false if ACS version is missing', () => {
+      expect(isBulkActionsAvailable(makeContext())).toBe(false);
+      expect(isBulkActionsAvailable({ repository: {} } as any)).toBe(false);
+    });
+  });
+
+  describe('createVersionRule', () => {
+    it('should return true if version is equal to minimal version', () => {
+      const rule = createVersionRule('25.1.0');
+      expect(rule(makeContext('25.1.0'))).toBe(true);
+    });
+
+    it('should return true if version is greater than minimal version', () => {
+      const rule = createVersionRule('25.1.0');
+      expect(rule(makeContext('25.2.0'))).toBe(true);
+      expect(rule(makeContext('26.0.0'))).toBe(true);
+      expect(rule(makeContext('25.1.1'))).toBe(true);
+    });
+
+    it('should return false if version is less than minimal version', () => {
+      const rule = createVersionRule('25.1.0');
+      expect(rule(makeContext('25.0.9'))).toBe(false);
+      expect(rule(makeContext('24.9.0'))).toBe(false);
+    });
+
+    it('should return false if version is missing', () => {
+      const rule = createVersionRule('25.1.0');
+      expect(rule(makeContext())).toBe(false);
+      expect(rule({ repository: {} } as any)).toBe(false);
+    });
+
+    it('should handle versions with different number of segments', () => {
+      const rule = createVersionRule('25.1.0');
+      expect(rule(makeContext('25.1'))).toBe(true);
+      expect(rule(makeContext('25.1.1'))).toBe(true);
+      expect(rule(makeContext('25.1.0.1-beta'))).toBe(true);
+      expect(rule(makeContext('25.0.1.1-rc'))).toBe(false);
     });
   });
 });

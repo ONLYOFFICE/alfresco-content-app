@@ -24,10 +24,10 @@
 
 import { SearchPage } from '../../../pages';
 import { BaseComponent } from '../../base.component';
-import { Page } from '@playwright/test';
+import { Page, Locator } from '@playwright/test';
 
 export class SearchFiltersTags extends BaseComponent {
-  private static rootElement = '.adf-search-filter-menu-card';
+  private static readonly rootElement = '.adf-search-filter-menu-card';
 
   constructor(page: Page) {
     super(page, SearchFiltersTags.rootElement);
@@ -35,11 +35,21 @@ export class SearchFiltersTags extends BaseComponent {
 
   public addOptionInput = this.getChild(`[data-automation-id$='adf-search-chip-autocomplete-input']`);
 
+  private searchOption(value: string): Locator {
+    return this.page.locator(`[data-automation-id="option-${value}"]`);
+  }
+
   async filterByTag(page: SearchPage, tag: string): Promise<void> {
     await page.searchFilters.tagsFilter.click();
     await page.searchFiltersTags.addOptionInput.fill(tag);
-    await page.page.keyboard.press('Enter');
-    await page.searchFilters.menuCardApply.click();
-    await page.dataTable.progressBarWaitForReload();
+    await this.searchOption(tag).click();
+    await page.searchMenuCard.menuCardApply.click();
+    await page.dataTable.spinnerWaitForReload();
+  }
+
+  async clearTagFilter(page: SearchPage): Promise<void> {
+    await page.searchFilters.tagsFilter.click();
+    await page.searchMenuCard.menuCardClear.click();
+    await page.dataTable.spinnerWaitForReload();
   }
 }

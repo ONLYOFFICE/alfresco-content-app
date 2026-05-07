@@ -24,8 +24,8 @@
       "@alfresco/aca-shared": ["projects/aca-shared/src/public-api.ts"],
       "@alfresco/aca-shared/rules": ["projects/aca-shared/rules/src/public-api.ts"],
       "@alfresco/aca-shared/store": ["projects/aca-shared/store/src/public-api.ts"],
-      "@onlyoffice/alfresco-extension": ["projects/onlyoffice-alfresco-extension/src/index.ts"],
-      "package.json": ["package.json"]
+      "package.json": ["package.json"],
+      "@onlyoffice/alfresco-extension": ["projects/onlyoffice-alfresco-extension/src/index.ts"]
     }
   },
   "exclude": ["node_modules"]

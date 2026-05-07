@@ -19,7 +19,13 @@
         "DESCRIPTION": "Beschrijving",
         "WHEN": "Wanneer",
         "PERFORM_ACTIONS": "Acties uitvoeren",
-        "OPTIONS": "Andere opties"
+        "OPTIONS": "Andere opties",
+        "FIELD": "Veld",
+        "COMPARATOR": "Comparator",
+        "VALUE": "Waarde",
+        "LOGIC_OPERATOR": "Logische operator",
+        "GROUP_CONDITIONS": "Groepscondities",
+        "CONDITIONS": "Condities"
       },
       "PLACEHOLDER": {
         "NAME": "Regelnaam invoeren",
@@ -31,7 +37,8 @@
       "ERROR": {
         "REQUIRED": "Dit veld is vereist",
         "RULE_COMPOSITE_CONDITION_INVALID": "Eén of meer voorwaardengroepen zijn leeg",
-        "INSUFFICIENT_TRIGGERS_SELECTED": "Er is minstens één trigger vereist"
+        "INSUFFICIENT_TRIGGERS_SELECTED": "Er is minstens één trigger vereist",
+        "ACTION_REQUIRED": "Actie veld is vereist"
       },
       "TRIGGERS": {
         "INBOUND": "Items worden gemaakt of gaan naar deze map",
@@ -124,9 +131,10 @@
       "LOAD_MORE_RULE_SETS": "Regels laden uit andere mappen",
       "LOAD_MORE_RULES": "Meer regels laden",
       "LOADING_RULES": "Regels worden geladen",
-      "TOGGLE_RULE_STATE": "Toestand schakelregel geactiveerd",
+      "TOGGLE_RULE_STATE": "{{ name }} regel in-/uitschakelen",
       "INHERITED_RULES_WILL_BE_RUN_FIRST": "Overgenomen regels worden als eerste uitgevoerd",
-      "ALL_LINKED_RULES_ARE_DISABLED": "Alle regels die vanuit deze regelset zijn gekoppeld worden uitgeschakeld"
+      "ALL_LINKED_RULES_ARE_DISABLED": "Alle regels die vanuit deze regelset zijn gekoppeld worden uitgeschakeld",
+      "EDIT_LINK_LABEL": "Koppel regels van een andere map"
     },
     "LINK_RULES_DIALOG": {
       "TITLE": "Selecteer een map van waaruit regels moeten worden gekoppeld",

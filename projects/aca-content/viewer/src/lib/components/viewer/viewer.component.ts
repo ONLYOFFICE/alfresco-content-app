@@ -43,7 +43,7 @@ import {
   ViewNodeAction
 } from '@alfresco/aca-shared/store';
 import { ContentActionRef, SelectionState } from '@alfresco/adf-extensions';
-import { Node, VersionEntry, VersionsApi } from '@alfresco/js-api';
+import { Node, VersionEntry, VersionsApi, LazyApi } from '@alfresco/js-api';
 import { Component, DestroyRef, HostListener, inject, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, PRIMARY_OUTLET, Router } from '@angular/router';
 import { ViewerOpenWithComponent, ViewerSidebarComponent, ViewerToolbarActionsComponent } from '@alfresco/adf-core';
@@ -74,16 +74,24 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   host: { class: 'app-viewer' }
 })
 export class AcaViewerComponent implements OnInit, OnDestroy {
+  private readonly actions$ = inject(Actions);
+  private readonly apiService = inject(AlfrescoApiService);
+  private readonly appHookService = inject(AppHookService);
+  private readonly contentApi = inject(ContentApiService);
+  private readonly extensions = inject(AppExtensionService);
+  private readonly nodesApiService = inject(NodesApiService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly store = inject<Store<AppStore>>(Store);
+  private readonly uploadService = inject(UploadService);
+  private readonly viewerService = inject(ViewerService);
+
   settings = inject(AppSettingsService);
 
-  private documentListService = inject(DocumentListService);
+  private readonly documentListService = inject(DocumentListService);
 
-  private _versionsApi: VersionsApi;
-  get versionsApi(): VersionsApi {
-    this._versionsApi = this._versionsApi ?? new VersionsApi(this.apiService.getInstance());
-    return this._versionsApi;
-  }
-
+  @LazyApi((self: AcaViewerComponent) => new VersionsApi(self.apiService.getInstance()))
+  declare versionsApi: VersionsApi;
   fileName: string;
   folderId: string = null;
   infoDrawerOpened$: Observable<boolean>;
@@ -102,23 +110,9 @@ export class AcaViewerComponent implements OnInit, OnDestroy {
 
   private navigationPath: string;
   private previewLocation: string;
-  private containersSkipNavigation = ['adf-viewer__sidebar', 'cdk-overlay-container', 'adf-image-viewer'];
+  private readonly containersSkipNavigation = ['adf-viewer__sidebar', 'cdk-overlay-container', 'adf-image-viewer'];
 
   private readonly destroyRef = inject(DestroyRef);
-
-  constructor(
-    private actions$: Actions,
-    private apiService: AlfrescoApiService,
-    private appHookService: AppHookService,
-    private contentApi: ContentApiService,
-    private extensions: AppExtensionService,
-    private nodesApiService: NodesApiService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private store: Store<AppStore>,
-    private uploadService: UploadService,
-    private viewerService: ViewerService
-  ) {}
 
   ngOnInit() {
     this.infoDrawerOpened$ = this.store.select(isInfoDrawerOpened);

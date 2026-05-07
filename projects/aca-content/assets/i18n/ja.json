@@ -1,6 +1,6 @@
 {
     "APP": {
-        "COPYRIGHT": "© 2005-2025 Hyland Software, Inc. および関連会社。無断転載禁止",
+        "COPYRIGHT": "© 2005-2025 Hyland Software, Inc. および関連会社。無断転載禁止。",
         "TITLE": "Workspace",
         "ABOUT": {
             "VERSION": "バージョン:",
@@ -34,7 +34,8 @@
                 "TITLE": "パッケージ",
                 "NAME": "名前",
                 "VERSION": "バージョン"
-            }
+            },
+            "BACK_BUTTON_LABEL": "戻る"
         },
         "LANGUAGE": "言語",
         "SIGN_IN": "サインイン",
@@ -51,19 +52,14 @@
             "LOCATION": "場所",
             "TELEPHONE": "電話",
             "MOBILE": "携帯",
-            "LOGIN": "ログイン",
-            "USERNAME": "ユーザー名",
             "EMAIL": "E メール",
-            "PASSWORD": "パスワード",
-            "OLD_PASSWORD": "古いパスワード",
-            "FORGOT_PASSWORD": "パスワードを忘れた場合",
-            "NEW_PASSWORD": "新しいパスワード",
-            "VERIFY_PASSWORD": "新しいパスワードの再入力",
             "COMPANY_DETAILS": "会社情報",
             "NAME": "名前",
             "ADDRESS": "住所",
             "POSTCODE": "郵便番号",
-            "INVALID_INPUT": "無効な入力"
+            "INVALID_PHONE_FORMAT": "有効な電話番号を入力してください",
+            "INVALID_EMAIL_FORMAT": "有効なメールアドレスを入力してください",
+            "GO_TO_PERSONAL_FILES_BUTTON_LABEL": "個人ファイルに移動"
         },
         "LOCKED_BY": "ロックしているユーザー: ",
         "PREVIEW": {
@@ -118,6 +114,13 @@
                     "TITLE": "権限"
                 }
             },
+            "REPOSITORY_VIEW": {
+                "TITLE": "Repository",
+                "SIDENAV_LINK": {
+                    "LABEL": "Repository",
+                    "TOOLTIP": "View the repository"
+                }
+            },
             "LIBRARIES": {
                 "TITLE": "ファイルライブラリ",
                 "DESCRIPTION": "ファイルライブラリにアクセスします",
@@ -133,6 +136,10 @@
                     "FAVORITE_LIBRARIES": {
                         "TITLE": "お気に入りのライブラリはありません",
                         "TEXT": "後で簡単に見つけられるようにライブラリをお気に入りに追加します。"
+                    },
+                    "ALL_LIBRARIES": {
+                        "TITLE": "ライブラリが見つかりません",
+                        "TEXT": "新しいライブラリを作成して始めましょう。"
                     }
                 },
                 "MENU": {
@@ -148,6 +155,13 @@
                         "SIDENAV_LINK": {
                             "LABEL": "お気に入りのライブラリ",
                             "TOOLTIP": "お気に入りのライブラリにアクセス"
+                        }
+                    },
+                    "ALL_LIBRARIES": {
+                        "TITLE": "すべてのライブラリ",
+                        "SIDENAV_LINK": {
+                            "LABEL": "すべてのライブラリ",
+                            "TOOLTIP": "すべてのライブラリにアクセス"
                         }
                     }
                 },
@@ -260,7 +274,8 @@
                     "LOCATION": "場所",
                     "SIZE": "サイズ"
                 },
-                "UNKNOWN_LOCATION": "不明",
+                "UNKNOWN_LOCATION": "このドキュメントのロケーションを閲覧する権限がありません。",
+                "VIEW_ADDITIONAL_LOCATIONS": "追加の参照場所を表示",
                 "NO_RESULTS": "検索結果は 0 件です",
                 "EMPTY_SEARCH": "検索語句が必要",
                 "NO_FILTER_RESULTS": "フィルタによる検索結果は 0 件です",
@@ -305,7 +320,7 @@
             "EDIT_OFFLINE_CANCEL": "編集のキャンセル",
             "CHANGE_ASPECT": "アスペクトを編集",
             "ADD_ASPECTS": "アスペクトを追加",
-            "FOLDER_INFO": "フォルダ情報"
+            "NODE_INFO": "情報"
         },
         "DIALOGS": {
             "CONFIRM_PURGE": {
@@ -420,6 +435,10 @@
                         "FAIL": "{{ failed }} 件を移動できませんでした。"
                     }
                 },
+                "NODE_CREATE": {
+                    "FILE_FROM_TEMPLATE_SUCCESS": "ファイル {{ name }} がテンプレートから作成されました",
+                    "FOLDER_FROM_TEMPLATE_SUCCESS": "フォルダー {{ name }} がテンプレートから作成されました"
+                },
                 "LIBRARY_DELETED": "ライブラリが削除されました",
                 "LEFT_LIBRARY": "このライブラリからは脱退しています",
                 "FAVORITE_NODE_ADDED": "{{ name }} がお気に入りに追加されました",
@@ -459,23 +478,34 @@
         },
         "TOOLTIPS": {
             "COLLAPSE_NAVIGATION": "ナビゲーションメニューを折りたたむ",
+            "COLLAPSE_NAVIGATION_ALT": "ナビゲーションメニュー折りたたみアイコン",
             "OPTIONS_SETTINGS": "オプションと設定",
             "MY_PROFILE": "あなたのプロフィール",
-            "EXPAND_NAVIGATION": "ナビゲーションメニューを展開します"
+            "EXPAND_NAVIGATION": "ナビゲーションメニューを展開します",
+            "EXPAND_SECTION": "セクションを展開",
+            "COLLAPSE_SECTION": "セクションを閉じる",
+            "EDIT": "編集",
+            "CANCEL": "キャンセル",
+            "SAVE": "保存"
         },
-        "FOLDER_INFO": {
-            "ICON": "フォルダアイコン",
-            "TITLE": "フォルダ情報",
+        "NODE_INFO": {
+            "ICON": "ノードアイコン",
+            "TITLE": "情報",
             "SIZE": "サイズ",
             "NUMBER_OF_FILES": "ファイル数",
             "CALCULATING": "計算中...",
-            "CALCULATED_SIZE_LARGE": "{{count}} ファイルあたり{{sizeInBytes}} バイト (ディスク上に{{sizeInLargeUnit}} {{unit}})",
-            "CALCULATED_SIZE_NORMAL": "{{count}} ファイルあたり{{sizeInBytes}}バイト",
             "LOCATION": "場所",
-            "CREATED": "作成日",
+            "REFERENCED": "参照済み",
+            "CREATED": "作成済み",
             "MODIFIED": "修正日",
             "DONE": "完了",
             "ERROR": "何か問題が発生しました。このダイアログを閉じて操作をやり直してください"
+        },
+        "ADDITIONAL_REFERENCES_DIALOG": {
+            "TITLE": "追加の参照場所",
+            "NO_LOCATIONS": "{{ name }} はどの場所からも参照されていません。",
+            "DESCRIPTION": "{{ name }} は現在、次の場所から参照されています。",
+            "CLOSE": "閉じる"
         }
     },
     "NODE_SELECTOR": {
@@ -565,7 +595,8 @@
     },
     "SEARCH": {
         "BULK_ACTIONS_DROPDOWN": {
-            "TITLE": "バルクアクション ({{ count }} 項目)",
+            "LABEL": "一括操作",
+            "TITLE": "すべての {{ count }} の結果に対するアクションの選択",
             "BULK_NOT_AVAILABLE": "バルクアクション (利用不可)",
             "BULK_NOT_AVAILABLE_TOOLTIP": "バルクアクションは検索結果なしでは使用できません"
         },
@@ -576,7 +607,12 @@
             "LIBRARIES": "ライブラリ",
             "MIN_LENGTH": "検索する語句は、2 文字以上の英数字で入力してください。",
             "REQUIRED": "検索入力が必要です。",
-            "WHITESPACE": "検索入力は空白にはできません。"
+            "WHITESPACE": "検索入力は空白にはできません。",
+            "OPERATORS": "検索入力は演算子で開始・終了、または演算子のみで構成することはできません",
+            "IN_PREFIX": "対象",
+            "FILES_AND_FOLDERS": "ファイルとフォルダー",
+            "RESET": "リセット",
+            "SEARCH_IN": "検索先"
         },
         "SORT": {
             "SORTING_OPTION": "並べ替え",
@@ -685,7 +721,8 @@
                 "REFERENCED_DOCUMENTS_HEADER": "参照文書",
                 "REGENERATION_BUTTON_LABEL": "再生成",
                 "COPY_BUTTON_LABEL": "コピー",
-                "COPY_MESSAGE": "回答をクリップボードにコピー済み"
+                "COPY_MESSAGE": "回答をクリップボードにコピー済み",
+                "RELOAD_REFERENCES_BUTTON_LABEL": "再読み込み"
             },
             "AGENTS_BUTTON": {
                 "LABEL": "デモディスカバリ",
@@ -701,7 +738,8 @@
                 "AGENTS_FETCHING": "エージェント取得中にエラーが発生しました。",
                 "HX_INSIGHT_URL_FETCHING": "HX Insight URL取得中にエラーが発生しました。",
                 "LOADING_ERROR": "どうやら、何か問題が起こったようです。",
-                "PAGE_NOT_AVAILABLE_ERROR": "これらの条件ではページは利用できません。"
+                "PAGE_NOT_AVAILABLE_ERROR": "これらの条件ではページは利用できません。",
+                "REFERENCES_LOADING_ERROR": "参考文献を読み込む際に問題が発生しました。"
             },
             "DISCARD_CHANGES": {
                 "WARNING": "警告!",

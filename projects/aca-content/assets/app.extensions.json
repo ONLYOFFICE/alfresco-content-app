@@ -176,6 +176,13 @@
                 "route": "favorite/libraries"
               },
               {
+                "id": "app.navbar.libraries.all",
+                "order": 350,
+                "title": "APP.BROWSE.LIBRARIES.MENU.ALL_LIBRARIES.SIDENAV_LINK.LABEL",
+                "description": "APP.BROWSE.LIBRARIES.MENU.ALL_LIBRARIES.SIDENAV_LINK.TOOLTIP",
+                "route": "all/libraries"
+              },
+              {
                 "id": "app.navbar.recentFiles",
                 "order": 400,
                 "title": "APP.BROWSE.RECENT.SIDENAV_LINK.LABEL",
@@ -183,22 +190,29 @@
                 "route": "recent-files"
               },
               {
-                "id": "app.navbar.favorites",
+                "id": "app.navbar.repositoryView",
                 "order": 500,
+                "title": "APP.BROWSE.REPOSITORY_VIEW.SIDENAV_LINK.LABEL",
+                "description": "APP.BROWSE.REPOSITORY_VIEW.SIDENAV_LINK.TOOLTIP",
+                "route": "repository"
+              },
+              {
+                "id": "app.navbar.favorites",
+                "order": 600,
                 "title": "APP.BROWSE.FAVORITES.SIDENAV_LINK.LABEL",
                 "description": "APP.BROWSE.FAVORITES.SIDENAV_LINK.TOOLTIP",
                 "route": "favorites"
               },
               {
                 "id": "app.navbar.shared",
-                "order": 600,
+                "order": 700,
                 "title": "APP.BROWSE.SHARED.SIDENAV_LINK.LABEL",
                 "description": "APP.BROWSE.SHARED.SIDENAV_LINK.TOOLTIP",
                 "route": "shared"
               },
               {
                 "id": "app.navbar.trashcan",
-                "order": 700,
+                "order": 800,
                 "title": "APP.BROWSE.TRASHCAN.SIDENAV_LINK.LABEL",
                 "description": "APP.BROWSE.TRASHCAN.SIDENAV_LINK.TOOLTIP",
                 "route": "trashcan"
@@ -501,8 +515,7 @@
         "component": "app.toolbar.toggleInfoDrawer",
         "rules": {
           "visible": [
-            "app.selection.library",
-            "isLibraryManager"
+            "app.selection.library"
           ]
         }
       },
@@ -522,7 +535,8 @@
               "visible": [
                 "app.selection.file",
                 "!app.navigation.isTrashcan",
-                "canToggleFileLock"
+                "canToggleFileLock",
+                "!app.selection.isCheckedOut"
               ]
             }
           },
@@ -560,7 +574,9 @@
             "comment": "workaround for Recent Files and Search API issue",
             "type": "custom",
             "order": 400,
-            "data": "['/favorites', '/favorite/libraries']",
+            "data": {
+              "routes": ["/favorites", "/favorite/libraries"]
+            },
             "component": "app.toolbar.toggleFavorite",
             "rules": {
               "visible": [
@@ -675,17 +691,20 @@
             }
           },
           {
-            "id": "app.context.menu.folder-info",
-            "title": "APP.ACTIONS.FOLDER_INFO",
+            "id": "app.context.menu.node-info",
+            "title": "APP.ACTIONS.NODE_INFO",
             "order": 800,
             "icon": "info",
             "actions": {
-              "click": "FOLDER_INFORMATION"
+              "click": "NODE_INFORMATION"
             },
             "rules": {
               "visible": [
-                "app.selection.folder",
-                "!app.navigation.isTrashcan"
+                "app.selection.notEmpty",
+                "!app.navigation.isLibraries",
+                "!app.navigation.isSharedFiles",
+                "!app.navigation.isTrashcan",
+                "isNodeInfoAvailable"
               ]
             }
           },
@@ -855,7 +874,8 @@
           "visible": [
             "app.selection.file",
             "!app.navigation.isTrashcan",
-            "canToggleFileLock"
+            "canToggleFileLock",
+            "!app.selection.isCheckedOut"
           ]
         }
       },
@@ -932,7 +952,10 @@
         "comment": "workaround for Recent Files and Search API issue",
         "type": "custom",
         "order": 802,
-        "data": "['/favorites', '/favorite/libraries']",
+        "data": {
+          "routes": ["/favorites", "/favorite/libraries"],
+          "focusAfterClosed": ".adf-context-menu-source"
+        },
         "component": "app.toolbar.toggleFavorite",
         "rules": {
           "visible": [
@@ -946,6 +969,9 @@
         "type": "custom",
         "order": 803,
         "component": "app.toolbar.toggleFavoriteLibrary",
+        "data": {
+          "focusAfterClosed": ".adf-context-menu-source"
+        },
         "rules": {
           "visible": [
             "app.selection.library"
@@ -1008,17 +1034,20 @@
         }
       },
       {
-        "id": "app.context.menu.folder-info",
-        "title": "APP.ACTIONS.FOLDER_INFO",
+        "id": "app.context.menu.node-info",
+        "title": "APP.ACTIONS.NODE_INFO",
         "order": 1200,
         "icon": "info",
         "actions": {
-          "click": "FOLDER_INFORMATION"
+          "click": "NODE_INFORMATION"
         },
         "rules": {
           "visible": [
-            "app.selection.folder",
-            "!app.navigation.isTrashcan"
+            "app.selection.notEmpty",
+            "!app.navigation.isLibraries",
+            "!app.navigation.isSharedFiles",
+            "!app.navigation.isTrashcan",
+            "isNodeInfoAvailable"
           ]
         }
       },
@@ -1270,7 +1299,8 @@
                 "visible": [
                   "app.selection.file",
                   "!app.navigation.isTrashcan",
-                  "canToggleFileLock"
+                  "canToggleFileLock",
+                  "!app.selection.isCheckedOut"
                 ]
               }
             },
@@ -1578,8 +1608,7 @@
           "component": "app.components.tabs.library.metadata",
           "rules": {
             "visible": [
-              "app.selection.library",
-              "isLibraryManager"
+              "app.selection.library"
             ]
           }
         }

@@ -22,15 +22,15 @@
  * from Hyland Software. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { SearchResultsComponent } from './search-results.component';
 import { AppConfigService, NotificationService, TranslationService } from '@alfresco/adf-core';
 import { Store } from '@ngrx/store';
 import { NavigateToFolder } from '@alfresco/aca-shared/store';
 import { Pagination, SearchRequest } from '@alfresco/js-api';
-import { SavedSearchesService, SearchQueryBuilderService } from '@alfresco/adf-content-services';
+import { FacetFieldBucket, SearchQueryBuilderService } from '@alfresco/adf-content-services';
 import { ActivatedRoute, Event, NavigationStart, Params, Router } from '@angular/router';
-import { BehaviorSubject, of, Subject, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject, throwError } from 'rxjs';
 import { AppTestingModule } from '../../../testing/app-testing.module';
 import { AppService } from '@alfresco/aca-shared';
 import { MatSnackBarModule, MatSnackBarRef } from '@angular/material/snack-bar';
@@ -41,6 +41,9 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatMenuHarness } from '@angular/material/menu/testing';
+import { SavedSearchesContextService } from '../../../services/saved-searches-context.service';
+import { IsFeatureSupportedInCurrentAcsPipe } from '../../../pipes/is-feature-supported.pipe';
+import { MatDividerHarness } from '@angular/material/divider/testing';
 
 describe('SearchComponent', () => {
   let component: SearchResultsComponent;
@@ -58,9 +61,12 @@ describe('SearchComponent', () => {
   let showErrorSpy: jasmine.Spy<(message: string, action?: string, interpolateArgs?: any, showAction?: boolean) => MatSnackBarRef<any>>;
   let showInfoSpy: jasmine.Spy<(message: string, action?: string, interpolateArgs?: any, showAction?: boolean) => MatSnackBarRef<any>>;
   let loader: HarnessLoader;
+  let updatedSubjectMock: Subject<SearchRequest>;
 
   const editSavedSearchesSpy = jasmine.createSpy('editSavedSearch');
   const getSavedSearchButton = (): HTMLButtonElement => fixture.nativeElement.querySelector('.aca-content__save-search-action');
+  const getResetSearchButton = (): HTMLButtonElement => fixture.nativeElement.querySelector('.aca-content__reset-action');
+  const getDividerHarness = () => loader.getHarness(MatDividerHarness);
 
   const encodeQuery = (query: any): string => {
     return Buffer.from(JSON.stringify(query)).toString('base64');
@@ -70,6 +76,7 @@ describe('SearchComponent', () => {
     params = new BehaviorSubject({ q: 'TYPE: "cm:folder" AND %28=cm: name: email OR cm: name: budget%29' });
     queryParams = new Subject();
     routerEvents = new Subject();
+    updatedSubjectMock = new Subject();
 
     const routerMock = jasmine.createSpyObj<Router>('Router', ['navigate'], {
       url: '/mock-search-url',
@@ -88,11 +95,9 @@ describe('SearchComponent', () => {
           }
         },
         {
-          provide: SavedSearchesService,
+          provide: SavedSearchesContextService,
           useValue: {
-            getSavedSearches: jasmine
-              .createSpy('getSavedSearches')
-              .and.returnValue(of([{ name: 'test', encodedUrl: encodeQuery({ name: 'test' }), order: 0 }])),
+            savedSearches$: of([{ name: 'test', encodedUrl: encodeQuery({ name: 'test' }), order: 0 }]),
             editSavedSearch: editSavedSearchesSpy
           }
         },
@@ -108,7 +113,11 @@ describe('SearchComponent', () => {
             queryParams: queryParams.asObservable()
           }
         },
-        { provide: Router, useValue: routerMock }
+        { provide: Router, useValue: routerMock },
+        {
+          provide: IsFeatureSupportedInCurrentAcsPipe,
+          useValue: { transform: (): Observable<boolean> => of(true) }
+        }
       ]
     });
 
@@ -118,6 +127,8 @@ describe('SearchComponent', () => {
     translate = TestBed.inject(TranslationService);
     router = TestBed.inject(Router);
     route = TestBed.inject(ActivatedRoute);
+
+    queryBuilder.updated = updatedSubjectMock;
 
     const notificationService = TestBed.inject(NotificationService);
     showErrorSpy = spyOn(notificationService, 'showError');
@@ -251,18 +262,22 @@ describe('SearchComponent', () => {
     });
   });
 
-  it('should update the user query whenever configuration changed', () => {
-    component.searchedWord = 'orange';
-    queryBuilder.configUpdated.next({ 'app:fields': ['cm:tag'] } as any);
-    expect(queryBuilder.userQuery).toBe(`((cm:tag:"orange*"))`);
-  });
-
-  it('should get initial saved search when url matches', fakeAsync(() => {
+  it('should get initial saved search when url matches', () => {
     route.queryParams = of({ q: encodeQuery({ name: 'test' }) });
     component.ngOnInit();
-    tick();
     expect(component.initialSavedSearch).toEqual({ name: 'test', encodedUrl: encodeQuery({ name: 'test' }), order: 0 });
-  }));
+  });
+
+  it('should get initial saved search after creating a new one', () => {
+    route.queryParams = of({ q: encodeQuery({ name: 'test' }) });
+    component.onSaveSearch();
+    expect(component.initialSavedSearch).toEqual({ name: 'test', encodedUrl: encodeQuery({ name: 'test' }), order: 0 });
+  });
+
+  it('should clear context save search in service on component destroy', () => {
+    component.ngOnDestroy();
+    expect(TestBed.inject(SavedSearchesContextService).currentContextSavedSearch).toBeUndefined();
+  });
 
   it('should render a menu with 2 options when initial saved search is found', async () => {
     route.queryParams = of({ q: encodeQuery({ name: 'test' }) });
@@ -325,8 +340,13 @@ describe('SearchComponent', () => {
     expect(queryBuilder.execute).toHaveBeenCalledTimes(1);
   }));
 
-  it('should NOT call execute on navigation to search page', fakeAsync(() => {
-    spyOn(queryBuilder, 'execute');
+  it('should NOT call execute on navigation to search page with unchanged query', fakeAsync(() => {
+    const executeSpy = spyOn(queryBuilder, 'execute');
+    queryParams.next({ q: encodeQuery({ userQuery: 'cm:name:"test*"' }) });
+    tick();
+
+    executeSpy.calls.reset();
+
     routerEvents.next(new NavigationStart(1, '/mock-search-url', 'imperative'));
     queryParams.next({ q: encodeQuery({ userQuery: 'cm:name:"test*"' }) });
 
@@ -334,6 +354,157 @@ describe('SearchComponent', () => {
 
     expect(queryBuilder.execute).not.toHaveBeenCalled();
   }));
+
+  it('should call execute on navigation to search page with changed query', fakeAsync(() => {
+    const executeSpy = spyOn(queryBuilder, 'execute');
+    queryParams.next({ q: encodeQuery({ userQuery: 'cm:name:"different*"' }) });
+    tick();
+
+    executeSpy.calls.reset();
+
+    routerEvents.next(new NavigationStart(1, '/mock-search-url', 'imperative'));
+    queryParams.next({ q: encodeQuery({ userQuery: 'cm:name:"test*"' }) });
+
+    tick();
+
+    expect(executeSpy).toHaveBeenCalledTimes(1);
+  }));
+
+  it('should format userQuery when url parameters changed and userQuery is not contained by url', () => {
+    routerEvents.next(new NavigationStart(1, ''));
+    queryParams.next({ q: encodeQuery('') });
+    expect(queryBuilder.userQuery).toBe('((cm:name:"*"))');
+  });
+
+  it('should not format userQuery when url parameters changed when userQuery is already contained by url', () => {
+    routerEvents.next(new NavigationStart(1, ''));
+    queryParams.next({ q: encodeQuery({ userQuery: 'test' }) });
+    expect(queryBuilder.userQuery).toBe('(test)');
+  });
+
+  it('should set loading to true in updated stream for non-nullish query', fakeAsync(() => {
+    spyOn(queryBuilder, 'execute').and.stub();
+
+    expect(component.isLoading).toBeFalse();
+
+    updatedSubjectMock.next(null);
+
+    tick();
+
+    expect(component.isLoading).toBeFalse();
+
+    updatedSubjectMock.next({} as SearchRequest);
+
+    tick();
+
+    expect(component.isLoading).toBeTrue();
+
+    flush();
+  }));
+
+  it('should set isSmallScreen to true for small width', async () => {
+    spyOnProperty(window, 'innerWidth').and.returnValue(300);
+    window.dispatchEvent(new Event('resize'));
+    fixture.detectChanges();
+    const divider = await getDividerHarness();
+
+    expect(component.isSmallScreen).toBeTrue();
+    expect(await (await divider.host()).getAttribute('class')).toContain('aca-content__divider-horizontal');
+    expect(await divider.getOrientation()).toBe('horizontal');
+  });
+
+  it('should set isSmallScreen to false for large width', async () => {
+    spyOnProperty(window, 'innerWidth').and.returnValue(800);
+    window.dispatchEvent(new Event('resize'));
+    fixture.detectChanges();
+    const divider = await getDividerHarness();
+
+    expect(component.isSmallScreen).toBeFalse();
+    expect(await (await divider.host()).getAttribute('class')).toContain('aca-content__divider-vertical');
+    expect(await divider.getOrientation()).toBe('vertical');
+  });
+
+  describe('reset button', () => {
+    it('should enable the reset button when there are queryFragments', fakeAsync(() => {
+      queryBuilder.queryFragmentsUpdate.next({ test: 'test-value' });
+
+      tick();
+
+      fixture.detectChanges();
+
+      const resetBtn = getResetSearchButton();
+
+      expect(resetBtn).toBeDefined();
+      expect(resetBtn.getAttribute('disabled')).toBeFalsy();
+
+      flush();
+    }));
+
+    it('should enable the reset button when there are userFacetBuckets', fakeAsync(() => {
+      queryBuilder.userFacetBucketsUpdate.next({ test: [{ label: 'test-value' }] as FacetFieldBucket[] });
+
+      tick();
+
+      fixture.detectChanges();
+
+      const resetBtn = getResetSearchButton();
+
+      expect(resetBtn).toBeDefined();
+      expect(resetBtn.getAttribute('disabled')).toBeFalsy();
+
+      flush();
+    }));
+
+    it('should disable the reset button when there are no filters applied', fakeAsync(() => {
+      queryBuilder.queryFragmentsUpdate.next({});
+      queryBuilder.userFacetBucketsUpdate.next({});
+
+      tick();
+
+      fixture.detectChanges();
+
+      const resetBtn = getResetSearchButton();
+
+      expect(resetBtn).toBeDefined();
+      expect(resetBtn.getAttribute('disabled')).toBeTruthy();
+
+      flush();
+    }));
+
+    it('should enable the reset button when userFacetBuckets was reset but queryFragments are still present', fakeAsync(() => {
+      queryBuilder.userFacetBucketsUpdate.next({ test: [{ label: 'test-value' }] as FacetFieldBucket[] });
+      queryBuilder.queryFragmentsUpdate.next({ test: 'test-value' });
+      queryBuilder.userFacetBucketsUpdate.next({});
+
+      tick();
+
+      fixture.detectChanges();
+
+      const resetBtn = getResetSearchButton();
+
+      expect(resetBtn).toBeDefined();
+      expect(resetBtn.getAttribute('disabled')).toBeFalsy();
+
+      flush();
+    }));
+
+    it('should enable the reset button when queryFragments was reset but userFacetBuckets are still present', fakeAsync(() => {
+      queryBuilder.userFacetBucketsUpdate.next({ test: [{ label: 'test-value' }] as FacetFieldBucket[] });
+      queryBuilder.queryFragmentsUpdate.next({ test: 'test-value' });
+      queryBuilder.queryFragmentsUpdate.next({});
+
+      tick();
+
+      fixture.detectChanges();
+
+      const resetBtn = getResetSearchButton();
+
+      expect(resetBtn).toBeDefined();
+      expect(resetBtn.getAttribute('disabled')).toBeFalsy();
+
+      flush();
+    }));
+  });
 
   testHeader(SearchResultsComponent, false);
 });

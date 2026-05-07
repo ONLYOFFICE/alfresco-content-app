@@ -32,17 +32,36 @@ import { SavedSearchEditDialogComponent } from '../dialog/edit/saved-search-edit
 export class SavedSearchesListUiService {
   private readonly dialog = inject(MatDialog);
 
-  openEditSavedSearch(savedSearch: SavedSearch): void {
-    this.dialog.open(SavedSearchEditDialogComponent, {
-      data: savedSearch,
-      width: '600px'
-    });
+  openEditSavedSearch(savedSearch: SavedSearch, fromContextMenu = false): void {
+    this.dialog
+      .open(SavedSearchEditDialogComponent, {
+        data: savedSearch,
+        width: '600px',
+        restoreFocus: false
+      })
+      .afterClosed()
+      .subscribe(() => this.focusAfterClose(savedSearch.name, fromContextMenu));
   }
 
-  confirmDeleteSavedSearch(savedSearch: SavedSearch): void {
-    this.dialog.open(SavedSearchDeleteDialogComponent, {
-      data: savedSearch,
-      minWidth: '500px'
-    });
+  confirmDeleteSavedSearch(savedSearch: SavedSearch, fromContextMenu = false): void {
+    this.dialog
+      .open(SavedSearchDeleteDialogComponent, {
+        data: savedSearch,
+        minWidth: '500px',
+        restoreFocus: false
+      })
+      .afterClosed()
+      .subscribe(() => this.focusAfterClose(savedSearch.name, fromContextMenu));
+  }
+
+  private focusAfterClose(name: string, fromContextMenu: boolean): void {
+    const row = Array.from(document.querySelectorAll<HTMLElement>('.adf-datatable-cell'))
+      .find((el) => el.getAttribute('data-automation-id') === name)
+      ?.closest<HTMLElement>('adf-datatable-row');
+
+    row?.focus();
+    if (!fromContextMenu) {
+      row?.querySelector<HTMLElement>('.adf-datatable-actions-menu button')?.focus();
+    }
   }
 }

@@ -22,7 +22,7 @@
  * from Hyland Software. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { UserPreferencesService } from '@alfresco/adf-core';
 import { AlfrescoApiService } from '@alfresco/adf-content-services';
 import { Observable, from } from 'rxjs';
@@ -52,7 +52,8 @@ import {
   PeopleApi,
   VersionsApi,
   DirectAccessUrlEntry,
-  VersionPaging
+  VersionPaging,
+  LazyApi
 } from '@alfresco/js-api';
 import { map } from 'rxjs/operators';
 
@@ -60,69 +61,38 @@ import { map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class ContentApiService {
-  private _nodesApi: NodesApi;
-  get nodesApi(): NodesApi {
-    this._nodesApi = this._nodesApi ?? new NodesApi(this.api.getInstance());
-    return this._nodesApi;
-  }
+  private readonly api = inject(AlfrescoApiService);
+  private readonly preferences = inject(UserPreferencesService);
 
-  private _trashcanApi: TrashcanApi;
-  get trashcanApi(): TrashcanApi {
-    this._trashcanApi = this._trashcanApi ?? new TrashcanApi(this.api.getInstance());
-    return this._trashcanApi;
-  }
+  @LazyApi((self: ContentApiService) => new NodesApi(self.api.getInstance()))
+  declare nodesApi: NodesApi;
 
-  private _sharedLinksApi: SharedlinksApi;
-  get sharedLinksApi(): SharedlinksApi {
-    this._sharedLinksApi = this._sharedLinksApi ?? new SharedlinksApi(this.api.getInstance());
-    return this._sharedLinksApi;
-  }
+  @LazyApi((self: ContentApiService) => new TrashcanApi(self.api.getInstance()))
+  declare trashcanApi: TrashcanApi;
 
-  private _discoveryApi: DiscoveryApi;
-  get discoveryApi(): DiscoveryApi {
-    this._discoveryApi = this._discoveryApi ?? new DiscoveryApi(this.api.getInstance());
-    return this._discoveryApi;
-  }
+  @LazyApi((self: ContentApiService) => new SharedlinksApi(self.api.getInstance()))
+  declare sharedLinksApi: SharedlinksApi;
 
-  private _favoritesApi: FavoritesApi;
-  get favoritesApi(): FavoritesApi {
-    this._favoritesApi = this._favoritesApi ?? new FavoritesApi(this.api.getInstance());
-    return this._favoritesApi;
-  }
+  @LazyApi((self: ContentApiService) => new DiscoveryApi(self.api.getInstance()))
+  declare discoveryApi: DiscoveryApi;
 
-  private _contentApi: ContentApi;
-  get contentApi(): ContentApi {
-    this._contentApi = this._contentApi ?? new ContentApi(this.api.getInstance());
-    return this._contentApi;
-  }
+  @LazyApi((self: ContentApiService) => new FavoritesApi(self.api.getInstance()))
+  declare favoritesApi: FavoritesApi;
 
-  private _sitesApi: SitesApi;
-  get sitesApi(): SitesApi {
-    this._sitesApi = this._sitesApi ?? new SitesApi(this.api.getInstance());
-    return this._sitesApi;
-  }
+  @LazyApi((self: ContentApiService) => new ContentApi(self.api.getInstance()))
+  declare contentApi: ContentApi;
 
-  private _searchApi: SearchApi;
-  get searchApi(): SearchApi {
-    this._searchApi = this._searchApi ?? new SearchApi(this.api.getInstance());
-    return this._searchApi;
-  }
+  @LazyApi((self: ContentApiService) => new SitesApi(self.api.getInstance()))
+  declare sitesApi: SitesApi;
 
-  private _peopleApi: PeopleApi;
-  get peopleApi(): PeopleApi {
-    this._peopleApi = this._peopleApi ?? new PeopleApi(this.api.getInstance());
-    return this._peopleApi;
-  }
+  @LazyApi((self: ContentApiService) => new SearchApi(self.api.getInstance()))
+  declare searchApi: SearchApi;
 
-  private _versionsApi: VersionsApi;
-  get versionsApi(): VersionsApi {
-    this._versionsApi = this._versionsApi ?? new VersionsApi(this.api.getInstance());
-    return this._versionsApi;
-  }
-  constructor(
-    private readonly api: AlfrescoApiService,
-    private readonly preferences: UserPreferencesService
-  ) {}
+  @LazyApi((self: ContentApiService) => new PeopleApi(self.api.getInstance()))
+  declare peopleApi: PeopleApi;
+
+  @LazyApi((self: ContentApiService) => new VersionsApi(self.api.getInstance()))
+  declare versionsApi: VersionsApi;
 
   /**
    * Moves a node to the trashcan.

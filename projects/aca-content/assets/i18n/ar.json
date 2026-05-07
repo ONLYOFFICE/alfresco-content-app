@@ -1,6 +1,6 @@
 {
     "APP": {
-        "COPYRIGHT": "© 2005-2025 Hyland Software, Inc. والشركات التابعة لها. جميع الحقوق محفوظة.",
+        "COPYRIGHT": "© 2005-2025 Hyland Software, Inc. والشركات التابعة لها. كل الحقوق محفوظة.",
         "TITLE": "مساحة العمل",
         "ABOUT": {
             "VERSION": "الإصدار:",
@@ -34,7 +34,8 @@
                 "TITLE": "حزم",
                 "NAME": "الاسم",
                 "VERSION": "الإصدار"
-            }
+            },
+            "BACK_BUTTON_LABEL": "الرجوع"
         },
         "LANGUAGE": "اللغة",
         "SIGN_IN": "تسجيل دخول",
@@ -51,19 +52,14 @@
             "LOCATION": "مكان",
             "TELEPHONE": "الهاتف",
             "MOBILE": "الجوال",
-            "LOGIN": "دخول",
-            "USERNAME": "اسم المستخدم",
             "EMAIL": "بريد إلكتروني",
-            "PASSWORD": "كلمة سر",
-            "OLD_PASSWORD": "كلمة السر القديمة",
-            "FORGOT_PASSWORD": "هل نسيت كلمة السر",
-            "NEW_PASSWORD": "كلمة سر جديدة",
-            "VERIFY_PASSWORD": "التحقق من كلمة السر",
             "COMPANY_DETAILS": "تفاصيل الشركة",
             "NAME": "الاسم",
             "ADDRESS": "العنوان",
             "POSTCODE": "الرمز البريدي",
-            "INVALID_INPUT": "إدخال غير صالح"
+            "INVALID_PHONE_FORMAT": "يرجى إدخال رقم هاتف صالح",
+            "INVALID_EMAIL_FORMAT": "يرجى إدخال عنوان بريد إلكتروني صالح",
+            "GO_TO_PERSONAL_FILES_BUTTON_LABEL": "الذهاب إلى الملفات الشخصية"
         },
         "LOCKED_BY": "مغلق من قبل ",
         "PREVIEW": {
@@ -118,6 +114,13 @@
                     "TITLE": "أذونات"
                 }
             },
+            "REPOSITORY_VIEW": {
+                "TITLE": "Repository",
+                "SIDENAV_LINK": {
+                    "LABEL": "Repository",
+                    "TOOLTIP": "View the repository"
+                }
+            },
             "LIBRARIES": {
                 "TITLE": "مكتبات الملفات",
                 "DESCRIPTION": "الوصول إلى مكتبات الملفات",
@@ -133,6 +136,10 @@
                     "FAVORITE_LIBRARIES": {
                         "TITLE": "لا توجد مكتبات مفضلة",
                         "TEXT": "حدد مكتبة تريد العثور عليها بسهولة لاحقًا كمفضلة."
+                    },
+                    "ALL_LIBRARIES": {
+                        "TITLE": "لم يتم العثور على مكتبة",
+                        "TEXT": "إنشاء مكتبة جديدة للبدء."
                     }
                 },
                 "MENU": {
@@ -148,6 +155,13 @@
                         "SIDENAV_LINK": {
                             "LABEL": "المكتبات المفضلة",
                             "TOOLTIP": "الوصول إلى مكتباتي المفضلة"
+                        }
+                    },
+                    "ALL_LIBRARIES": {
+                        "TITLE": "جميع المكتبات",
+                        "SIDENAV_LINK": {
+                            "LABEL": "جميع المكتبات",
+                            "TOOLTIP": "الوصول إلى جميع المكتبات"
                         }
                     }
                 },
@@ -260,7 +274,8 @@
                     "LOCATION": "مكان",
                     "SIZE": "الحجم"
                 },
-                "UNKNOWN_LOCATION": "غير معروف",
+                "UNKNOWN_LOCATION": "ليس لديك إذنٌ لعرض موقع هذا المستند.",
+                "VIEW_ADDITIONAL_LOCATIONS": "عرض مواقع المراجع الإضافية",
                 "NO_RESULTS": "أرجع البحث 0 نتائج",
                 "EMPTY_SEARCH": "مصطلح البحث مطلوب",
                 "NO_FILTER_RESULTS": "أعاد الفلتر 0 نتيجة",
@@ -305,7 +320,7 @@
             "EDIT_OFFLINE_CANCEL": "إلغاء التحرير",
             "CHANGE_ASPECT": "تحرير الجوانب",
             "ADD_ASPECTS": "إضافة جوانب",
-            "FOLDER_INFO": "معلومات المجلد"
+            "NODE_INFO": "معلومات"
         },
         "DIALOGS": {
             "CONFIRM_PURGE": {
@@ -420,6 +435,10 @@
                         "FAIL": "تعذر نقل {{ failed }}."
                     }
                 },
+                "NODE_CREATE": {
+                    "FILE_FROM_TEMPLATE_SUCCESS": "تم إنشاء الملف {{ name }} من القالب",
+                    "FOLDER_FROM_TEMPLATE_SUCCESS": "تم إنشاء المجلد {{ name }} من القالب"
+                },
                 "LIBRARY_DELETED": "تم حذف المكتبة",
                 "LEFT_LIBRARY": "لقد غادرت المكتبة",
                 "FAVORITE_NODE_ADDED": "تمت الإضافة {{ name }} إلى المفضلة",
@@ -459,23 +478,34 @@
         },
         "TOOLTIPS": {
             "COLLAPSE_NAVIGATION": "طي قائمة التنقل",
+            "COLLAPSE_NAVIGATION_ALT": "طي رمز قائمة التنقل",
             "OPTIONS_SETTINGS": "الخيارات والإعدادات",
             "MY_PROFILE": "ملف التعريف الخاص بي",
-            "EXPAND_NAVIGATION": "قم بتوسيع قائمة التنقل"
+            "EXPAND_NAVIGATION": "قم بتوسيع قائمة التنقل",
+            "EXPAND_SECTION": "توسيع القسم",
+            "COLLAPSE_SECTION": "طي القسم",
+            "EDIT": "تحرير",
+            "CANCEL": "إلغاء",
+            "SAVE": "حفظ"
         },
-        "FOLDER_INFO": {
-            "ICON": "أيقونة المجلد",
-            "TITLE": "معلومات المجلد",
+        "NODE_INFO": {
+            "ICON": "أيقونة العقدة",
+            "TITLE": "معلومات",
             "SIZE": "الحجم",
             "NUMBER_OF_FILES": "عدد الملفات",
             "CALCULATING": "حساب...",
-            "CALCULATED_SIZE_LARGE": "{{sizeInBytes}} بايت ({{sizeInLargeUnit}} {{unit}} على القرص) ل {{count}} الملفات",
-            "CALCULATED_SIZE_NORMAL": "{{sizeInBytes}} بايت  لـ {{count}} الملفات",
             "LOCATION": "مكان",
+            "REFERENCED": "مُشار إليه",
             "CREATED": "تم الإنشاء",
             "MODIFIED": "تم التعديل",
             "DONE": "تم",
             "ERROR": "حدث خطأ ما، يرجى إغلاق مربع الحوار هذا والمحاولة مرة أخرى"
+        },
+        "ADDITIONAL_REFERENCES_DIALOG": {
+            "TITLE": "موقع مرجع إضافي",
+            "NO_LOCATIONS": "‏{{ name }} غير مُشار إليه في أي مواقع.",
+            "DESCRIPTION": "‏{{ name }} مُشار إليه حاليًا في هذه المواقع.",
+            "CLOSE": "إغلاق"
         }
     },
     "NODE_SELECTOR": {
@@ -565,7 +595,8 @@
     },
     "SEARCH": {
         "BULK_ACTIONS_DROPDOWN": {
-            "TITLE": "الإجراءات المجمعة ({{ count }} من العناصر)",
+            "LABEL": "الإجراءات الشاملة",
+            "TITLE": "حدِّد إجراءً لجميع نتائج {{ count }}",
             "BULK_NOT_AVAILABLE": "الإجراءات المجمعة (غير متاحة)",
             "BULK_NOT_AVAILABLE_TOOLTIP": "لا يمكن استخدام الإجراءات المجمعة بدون نتائج البحث"
         },
@@ -576,7 +607,12 @@
             "LIBRARIES": "مكتبات",
             "MIN_LENGTH": "يجب أن يحتوي إدخال البحث على حرفين أبجديين رقميين على الأقل.",
             "REQUIRED": "إدخال البحث مطلوب.",
-            "WHITESPACE": "لا يمكن لمدخلات البحث أن تكون مساحة بيضاء فقط."
+            "WHITESPACE": "لا يمكن لمدخلات البحث أن تكون مساحة بيضاء فقط.",
+            "OPERATORS": "لا يمكن أن يبدأ إدخال البحث أو ينتهي أو يتكون فقط من عوامل تشغيل",
+            "IN_PREFIX": "في",
+            "FILES_AND_FOLDERS": "الملفات والمجلدات",
+            "RESET": "إعادة تعيين",
+            "SEARCH_IN": "البحث في"
         },
         "SORT": {
             "SORTING_OPTION": "صنف حسب",
@@ -685,7 +721,8 @@
                 "REFERENCED_DOCUMENTS_HEADER": "المستندات المرجعية",
                 "REGENERATION_BUTTON_LABEL": "إعادة إنشاء",
                 "COPY_BUTTON_LABEL": "نسخ",
-                "COPY_MESSAGE": "تم نسخ الرد إلى الحافظة"
+                "COPY_MESSAGE": "تم نسخ الرد إلى الحافظة",
+                "RELOAD_REFERENCES_BUTTON_LABEL": "إعادة التحميل"
             },
             "AGENTS_BUTTON": {
                 "LABEL": "اسأل Discovery",
@@ -701,7 +738,8 @@
                 "AGENTS_FETCHING": "حدث خطأ أثناء جلب الوكلاء.",
                 "HX_INSIGHT_URL_FETCHING": "خطأ أثناء جلب رابط HX Insight.",
                 "LOADING_ERROR": "معذرة، يبدو أن هناك خطأ ما.",
-                "PAGE_NOT_AVAILABLE_ERROR": "الصفحة غير متاحة لهذه الشروط."
+                "PAGE_NOT_AVAILABLE_ERROR": "الصفحة غير متاحة لهذه الشروط.",
+                "REFERENCES_LOADING_ERROR": "حدث خطأ أثناء تحميل المراجع."
             },
             "DISCARD_CHANGES": {
                 "WARNING": "تحذير!",

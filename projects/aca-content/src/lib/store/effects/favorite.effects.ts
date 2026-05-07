@@ -31,9 +31,9 @@ import { ContentManagementService } from '../../services/content-management.serv
 
 @Injectable()
 export class FavoriteEffects {
-  private store = inject(Store<AppStore>);
-  private actions$ = inject(Actions);
-  private content = inject(ContentManagementService);
+  private readonly store = inject(Store<AppStore>);
+  private readonly actions$ = inject(Actions);
+  private readonly content = inject(ContentManagementService);
 
   addFavorite$ = createEffect(
     () =>
@@ -41,14 +41,14 @@ export class FavoriteEffects {
         ofType<AddFavoriteAction>(NodeActionTypes.AddFavorite),
         map((action) => {
           if (action.payload && action.payload.length > 0) {
-            this.content.addFavorite(action.payload);
+            this.content.addFavorite(action.payload, action.configuration.focusedElementOnCloseSelector);
           } else {
             this.store
               .select(getAppSelection)
               .pipe(take(1))
               .subscribe((selection) => {
                 if (selection && !selection.isEmpty) {
-                  this.content.addFavorite(selection.nodes);
+                  this.content.addFavorite(selection.nodes, action.configuration.focusedElementOnCloseSelector);
                 }
               });
           }
@@ -63,14 +63,14 @@ export class FavoriteEffects {
         ofType<RemoveFavoriteAction>(NodeActionTypes.RemoveFavorite),
         map((action) => {
           if (action.payload && action.payload.length > 0) {
-            this.content.removeFavorite(action.payload);
+            this.content.removeFavorite(action.payload, action.configuration.focusedElementOnCloseSelector);
           } else {
             this.store
               .select(getAppSelection)
               .pipe(take(1))
               .subscribe((selection) => {
                 if (selection && !selection.isEmpty) {
-                  this.content.removeFavorite(selection.nodes);
+                  this.content.removeFavorite(selection.nodes, action.configuration.focusedElementOnCloseSelector);
                 }
               });
           }

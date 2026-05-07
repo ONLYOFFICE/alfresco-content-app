@@ -27,9 +27,9 @@ import { MatMenuComponent } from './dataTable';
 import { BaseComponent } from './base.component';
 
 export class AcaHeader extends BaseComponent {
-  private static rootElement = 'aca-toolbar';
-  private moreActionsButton = this.getChild('button[id="app.viewer.toolbar.more"]');
-  private toolbarMoreActions = this.getChild('button[id="app.toolbar.more"]');
+  private static readonly rootElement = 'aca-toolbar';
+  private readonly moreActionsButton = this.getChild('button[id="app.viewer.toolbar.more"]');
+  private readonly toolbarMoreActions = this.getChild('button[id="app.toolbar.more"]');
   public createButton = this.getChild('[id="app.toolbar.create"]');
   public viewDetails = this.getChild('[title="View Details"]');
   public viewButton = this.getChild('button[title="View"]');
@@ -41,7 +41,6 @@ export class AcaHeader extends BaseComponent {
   public sharedDownloadButton = this.getChild('button[id="app.viewer.shared.download"]');
   public uploadButton = this.getChild('button[id="app.toolbar.upload"]');
   public uploadFileButton = this.page.locator('button[id="app.create.uploadFile"]');
-  public uploadInput = this.page.locator('input[id="app-upload-files"]');
   public uploadNewVersionButton = this.page.locator('#app-upload-file-version');
   public permanentlyDeleteButton = this.getChild('button[id="app.toolbar.purgeDeletedNodes"]');
   public restoreButton = this.getChild('button[id="app.toolbar.restoreDeletedNodes"]');

@@ -26,7 +26,7 @@ import { BaseComponent } from '../base.component';
 import { Page } from '@playwright/test';
 
 export class ManageRulesDialogComponent extends BaseComponent {
-  private static rootElement = 'aca-edit-rule-dialog';
+  private static readonly rootElement = 'aca-edit-rule-dialog';
 
   public createRuleButton = this.getChild('[data-automation-id="edit-rule-dialog-submit"]');
   public cancelRuleButton = this.getChild('.aca-edit-rule-dialog__footer button').filter({ hasText: 'Cancel' });
@@ -38,10 +38,8 @@ export class ManageRulesDialogComponent extends BaseComponent {
   public comparatorDropDown = this.getChild('[data-automation-id="comparator-select"]');
   public valueField = this.getChild('[data-automation-id="value-input"]');
   public whenCreatedCheckbox = this.getChild('[data-automation-id="rule-trigger-checkbox-inbound"]');
-  public whenUpdatedCheckbox = this.getChild('[data-automation-id="rule-trigger-checkbox-update"]');
   public whenDeletedCheckbox = this.getChild('[data-automation-id="rule-trigger-checkbox-outbound"]');
   public destinationFolderButton = this.getChild('[data-automation-id="card-textitem-clickable-icon-destination-folder"]');
-  public ruleInBackgroundCheckbox = this.getChild('[data-automation-id="rule-option-checkbox-asynchronous"]');
   public ruleSubfoldersCheckbox = this.getChild('[data-automation-id="rule-option-checkbox-inheritable"]');
   public ruleDisableCheckbox = this.getChild('[data-automation-id="rule-option-checkbox-disabled"] input');
   public actionsEllipsisButtons = this.getChild('[data-automation-id="rule-action-list-action-menu"]');

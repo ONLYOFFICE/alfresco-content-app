@@ -34,7 +34,8 @@
                 "TITLE": "Pakker",
                 "NAME": "Navn",
                 "VERSION": "Versjon"
-            }
+            },
+            "BACK_BUTTON_LABEL": "Gå tilbake"
         },
         "LANGUAGE": "Språk",
         "SIGN_IN": "Logg på",
@@ -51,19 +52,14 @@
             "LOCATION": "Lokalisering",
             "TELEPHONE": "Telefon",
             "MOBILE": "Mobil",
-            "LOGIN": "Pålogging",
-            "USERNAME": "Brukernavn",
             "EMAIL": "E-post",
-            "PASSWORD": "Passord",
-            "OLD_PASSWORD": "Gammelt passord",
-            "FORGOT_PASSWORD": "Glemt passord",
-            "NEW_PASSWORD": "Nytt passord",
-            "VERIFY_PASSWORD": "Bekreft passord",
             "COMPANY_DETAILS": "Firmadetaljer",
             "NAME": "Navn",
             "ADDRESS": "Adresse",
             "POSTCODE": "Postnummer",
-            "INVALID_INPUT": "Ugyldig inndata"
+            "INVALID_PHONE_FORMAT": "Angi et gyldig telefonnummer",
+            "INVALID_EMAIL_FORMAT": "Angi en gyldig e‑postadresse",
+            "GO_TO_PERSONAL_FILES_BUTTON_LABEL": "Gå til personlige filer"
         },
         "LOCKED_BY": "Låst av: ",
         "PREVIEW": {
@@ -118,6 +114,13 @@
                     "TITLE": "Tillatelser"
                 }
             },
+            "REPOSITORY_VIEW": {
+                "TITLE": "Repository",
+                "SIDENAV_LINK": {
+                    "LABEL": "Repository",
+                    "TOOLTIP": "View the repository"
+                }
+            },
             "LIBRARIES": {
                 "TITLE": "Filbiblioteker",
                 "DESCRIPTION": "Få tilgang til filbiblioteker",
@@ -133,6 +136,10 @@
                     "FAVORITE_LIBRARIES": {
                         "TITLE": "Ingen favorittbiblioteker",
                         "TEXT": "Merk et bibliotek som favoritt for å enkelt finne det senere."
+                    },
+                    "ALL_LIBRARIES": {
+                        "TITLE": "Ingen bibliotek funnet",
+                        "TEXT": "Opprett et nytt bibliotek for å komme i gang."
                     }
                 },
                 "MENU": {
@@ -148,6 +155,13 @@
                         "SIDENAV_LINK": {
                             "LABEL": "Favorittbiblioteker",
                             "TOOLTIP": "Få tilgang til mine favorittbiblioteker"
+                        }
+                    },
+                    "ALL_LIBRARIES": {
+                        "TITLE": "Alle biblioteker",
+                        "SIDENAV_LINK": {
+                            "LABEL": "Alle biblioteker",
+                            "TOOLTIP": "Tilgang til alle biblioteker"
                         }
                     }
                 },
@@ -260,7 +274,8 @@
                     "LOCATION": "Lokalisering",
                     "SIZE": "Størrelse"
                 },
-                "UNKNOWN_LOCATION": "Ukjent",
+                "UNKNOWN_LOCATION": "You do not have permission to view the location of this document.",
+                "VIEW_ADDITIONAL_LOCATIONS": "Vis flere referanseplasseringer",
                 "NO_RESULTS": "Ditt søk ga 0 resultater",
                 "EMPTY_SEARCH": "Søkeord kreves",
                 "NO_FILTER_RESULTS": "Ditt filter ga 0 resultater",
@@ -305,7 +320,7 @@
             "EDIT_OFFLINE_CANCEL": "Avbryt redigering",
             "CHANGE_ASPECT": "Rediger aspekter",
             "ADD_ASPECTS": "Legg til aspekter",
-            "FOLDER_INFO": "Mappe informasjon"
+            "NODE_INFO": "Informasjon"
         },
         "DIALOGS": {
             "CONFIRM_PURGE": {
@@ -420,6 +435,10 @@
                         "FAIL": "{{ failed }} kunne ikke flyttes."
                     }
                 },
+                "NODE_CREATE": {
+                    "FILE_FROM_TEMPLATE_SUCCESS": "Filen {{ name }} ble opprettet fra malen",
+                    "FOLDER_FROM_TEMPLATE_SUCCESS": "Mappen {{ name }} ble opprettet fra malen"
+                },
                 "LIBRARY_DELETED": "Biblioteket er slettet",
                 "LEFT_LIBRARY": "Du har forlatt biblioteket",
                 "FAVORITE_NODE_ADDED": "Lagt {{ name }} til favoritter",
@@ -459,23 +478,34 @@
         },
         "TOOLTIPS": {
             "COLLAPSE_NAVIGATION": "Skjul navigasjonsmeny",
+            "COLLAPSE_NAVIGATION_ALT": "Ikon for å skjule navigasjonsmenyen",
             "OPTIONS_SETTINGS": "Alternativer og innstillinger",
             "MY_PROFILE": "Min profil",
-            "EXPAND_NAVIGATION": "Utvid navigasjonsmeny"
+            "EXPAND_NAVIGATION": "Utvid navigasjonsmeny",
+            "EXPAND_SECTION": "Utvid seksjon",
+            "COLLAPSE_SECTION": "Skjul seksjonen",
+            "EDIT": "Rediger",
+            "CANCEL": "Avbryt",
+            "SAVE": "Lagre"
         },
-        "FOLDER_INFO": {
-            "ICON": "Mappe ikon",
-            "TITLE": "Mappe informasjon",
+        "NODE_INFO": {
+            "ICON": "Node-ikon",
+            "TITLE": "Informasjon",
             "SIZE": "Størrelse",
             "NUMBER_OF_FILES": "Antall filer",
             "CALCULATING": "Beregner...",
-            "CALCULATED_SIZE_LARGE": "{{sizeInBytes}} bytes ({{sizeInLargeUnit}} {{unit}} på disk) for {{count}} filer",
-            "CALCULATED_SIZE_NORMAL": "{{sizeInBytes}} bytes for {{count}} filer",
             "LOCATION": "Lokalisering",
+            "REFERENCED": "Referert",
             "CREATED": "Opprettet",
             "MODIFIED": "Endret",
             "DONE": "Ferdig",
             "ERROR": "Noe gikk galt, lukk denne dialogboksen og prøv igjen"
+        },
+        "ADDITIONAL_REFERENCES_DIALOG": {
+            "TITLE": "Ekstra referanseplassering",
+            "NO_LOCATIONS": "{{ name }} er ikke referert på noen plasseringer.",
+            "DESCRIPTION": "{{ name }} er for øyeblikket referert på disse plasseringene.",
+            "CLOSE": "Lukk"
         }
     },
     "NODE_SELECTOR": {
@@ -565,7 +595,8 @@
     },
     "SEARCH": {
         "BULK_ACTIONS_DROPDOWN": {
-            "TITLE": "Massehandlinger ({{ count }} elementer)",
+            "LABEL": "Handlinger for flere",
+            "TITLE": "Select an action for all {{ count }} results",
             "BULK_NOT_AVAILABLE": "Massehandlinger (ikke tilgjengelig)",
             "BULK_NOT_AVAILABLE_TOOLTIP": "Massehandlinger kan ikke brukes uten søkeresultater"
         },
@@ -576,7 +607,12 @@
             "LIBRARIES": "Biblioteker",
             "MIN_LENGTH": "Søketeksten må bestå av minst 2 alfanumeriske tegn.",
             "REQUIRED": "Søk i inndata er påkrevd.",
-            "WHITESPACE": "Søkeinndata kan ikke bare være i blanke rom."
+            "WHITESPACE": "Søkeinndata kan ikke bare være i blanke rom.",
+            "OPERATORS": "Søkefeltet kan ikke starte med, slutte med eller kun bestå av operatorer",
+            "IN_PREFIX": "In",
+            "FILES_AND_FOLDERS": "Files and folders",
+            "RESET": "Tilbakestill",
+            "SEARCH_IN": "Search in"
         },
         "SORT": {
             "SORTING_OPTION": "Sorter etter",
@@ -685,7 +721,8 @@
                 "REFERENCED_DOCUMENTS_HEADER": "Refererte dokumenter",
                 "REGENERATION_BUTTON_LABEL": "Regenerer",
                 "COPY_BUTTON_LABEL": "Kopier",
-                "COPY_MESSAGE": "Svaret er kopiert til utklippstavlen"
+                "COPY_MESSAGE": "Svaret er kopiert til utklippstavlen",
+                "RELOAD_REFERENCES_BUTTON_LABEL": "Last inn på nytt"
             },
             "AGENTS_BUTTON": {
                 "LABEL": "Spør dokumentbevis",
@@ -701,7 +738,8 @@
                 "AGENTS_FETCHING": "Feil under henting av agenter.",
                 "HX_INSIGHT_URL_FETCHING": "Feil under henting av HX Insight URL.",
                 "LOADING_ERROR": "Hmm... noe ser ut til å ha gått galt.",
-                "PAGE_NOT_AVAILABLE_ERROR": "Siden er ikke tilgjengelig for disse betingelsene."
+                "PAGE_NOT_AVAILABLE_ERROR": "Siden er ikke tilgjengelig for disse betingelsene.",
+                "REFERENCES_LOADING_ERROR": "Noe gikk galt under lasting av referanser."
             },
             "DISCARD_CHANGES": {
                 "WARNING": "Advarsel!",

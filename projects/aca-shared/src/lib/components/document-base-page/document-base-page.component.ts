@@ -71,7 +71,7 @@ export abstract class PageComponent implements OnInit, OnDestroy, OnChanges {
   canUpdateNode = false;
   canUpload = false;
   nodeResult: NodePaging;
-  showHeader = ShowHeaderMode.Data;
+  showHeader: ShowHeaderMode = ShowHeaderMode.Data;
   filterSorting = 'name-asc';
   createActions: ContentActionRef[] = [];
   isSmallScreen = false;
@@ -91,8 +91,8 @@ export abstract class PageComponent implements OnInit, OnDestroy, OnChanges {
 
   protected readonly destroyRef = inject(DestroyRef);
 
-  private autoDownloadService = inject(AutoDownloadService, { optional: true });
-  private navigationHistoryService = inject(NavigationHistoryService);
+  private readonly autoDownloadService = inject(AutoDownloadService, { optional: true });
+  private readonly navigationHistoryService = inject(NavigationHistoryService);
 
   protected subscriptions: Subscription[] = [];
 
@@ -258,12 +258,5 @@ export abstract class PageComponent implements OnInit, OnDestroy, OnChanges {
   @HostListener('sorting-changed', ['$event'])
   onSortingChanged(event: any) {
     this.filterSorting = event.detail.key + '-' + event.detail.direction;
-  }
-
-  onAllFilterCleared() {
-    if (!this.isOutletPreviewUrl()) {
-      this.documentList.node = null;
-      this.documentListService.reload();
-    }
   }
 }

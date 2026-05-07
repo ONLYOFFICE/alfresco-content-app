@@ -34,7 +34,8 @@
                 "TITLE": "Paquetes",
                 "NAME": "Nombre",
                 "VERSION": "Versión"
-            }
+            },
+            "BACK_BUTTON_LABEL": "Volver"
         },
         "LANGUAGE": "Idioma",
         "SIGN_IN": "Iniciar sesión",
@@ -51,19 +52,14 @@
             "LOCATION": "Ubicación",
             "TELEPHONE": "Teléfono",
             "MOBILE": "Móvil",
-            "LOGIN": "Iniciar sesión",
-            "USERNAME": "Nombre de usuario",
             "EMAIL": "Correo electrónico",
-            "PASSWORD": "Contraseña",
-            "OLD_PASSWORD": "Contraseña anterior",
-            "FORGOT_PASSWORD": "¿Olvidó la contraseña?",
-            "NEW_PASSWORD": "Nueva contraseña",
-            "VERIFY_PASSWORD": "Contraseña de verificación",
             "COMPANY_DETAILS": "Detalles de la empresa",
             "NAME": "Nombre",
             "ADDRESS": "Dirección",
             "POSTCODE": "Código postal",
-            "INVALID_INPUT": "Entrada no válida"
+            "INVALID_PHONE_FORMAT": "Introduzca un número de teléfono válido",
+            "INVALID_EMAIL_FORMAT": "Introduzca una dirección de correo electrónico válida",
+            "GO_TO_PERSONAL_FILES_BUTTON_LABEL": "Ir a Archivos personales"
         },
         "LOCKED_BY": "Bloqueado por: ",
         "PREVIEW": {
@@ -118,6 +114,13 @@
                     "TITLE": "Permisos"
                 }
             },
+            "REPOSITORY_VIEW": {
+                "TITLE": "Repository",
+                "SIDENAV_LINK": {
+                    "LABEL": "Repository",
+                    "TOOLTIP": "View the repository"
+                }
+            },
             "LIBRARIES": {
                 "TITLE": "Bibliotecas de ficheros",
                 "DESCRIPTION": "Acceder a bibliotecas de ficheros",
@@ -133,6 +136,10 @@
                     "FAVORITE_LIBRARIES": {
                         "TITLE": "No hay bibliotecas favoritas",
                         "TEXT": "Marcar como favorita una biblioteca para encontrarla más rápidamente."
+                    },
+                    "ALL_LIBRARIES": {
+                        "TITLE": "Ninguna biblioteca encontrada",
+                        "TEXT": "Crear una nueva biblioteca para empezar."
                     }
                 },
                 "MENU": {
@@ -148,6 +155,13 @@
                         "SIDENAV_LINK": {
                             "LABEL": "Bibliotecas favoritas",
                             "TOOLTIP": "Acceder a mis bibliotecas favoritas"
+                        }
+                    },
+                    "ALL_LIBRARIES": {
+                        "TITLE": "Todas las bibliotecas",
+                        "SIDENAV_LINK": {
+                            "LABEL": "Todas las bibliotecas",
+                            "TOOLTIP": "Acceder a todas las bibliotecas"
                         }
                     }
                 },
@@ -260,7 +274,8 @@
                     "LOCATION": "Ubicación",
                     "SIZE": "Tamaño"
                 },
-                "UNKNOWN_LOCATION": "Desconocido",
+                "UNKNOWN_LOCATION": "No tiene permiso para ver la ubicación de este documento.",
+                "VIEW_ADDITIONAL_LOCATIONS": "Ver ubicaciones de referencia adicionales",
                 "NO_RESULTS": "Su búsqueda ha devuelto 0 resultados",
                 "EMPTY_SEARCH": "Se requiere un término de búsqueda",
                 "NO_FILTER_RESULTS": "Su filtro ha devuelto 0 resultados",
@@ -305,7 +320,7 @@
             "EDIT_OFFLINE_CANCEL": "Cancelar edición",
             "CHANGE_ASPECT": "Editar aspectos",
             "ADD_ASPECTS": "Añadir aspectos",
-            "FOLDER_INFO": "Información de la carpeta"
+            "NODE_INFO": "Información"
         },
         "DIALOGS": {
             "CONFIRM_PURGE": {
@@ -420,6 +435,10 @@
                         "FAIL": "{{ failed }} no se ha podido mover."
                     }
                 },
+                "NODE_CREATE": {
+                    "FILE_FROM_TEMPLATE_SUCCESS": "El archivo {{ name }} se creó a partir de la plantilla",
+                    "FOLDER_FROM_TEMPLATE_SUCCESS": "La carpeta {{ name }} se creó a partir de la plantilla"
+                },
                 "LIBRARY_DELETED": "Biblioteca eliminada",
                 "LEFT_LIBRARY": "Ha abandonado la biblioteca",
                 "FAVORITE_NODE_ADDED": "{{ name }} se ha añadido a los favoritos",
@@ -459,23 +478,34 @@
         },
         "TOOLTIPS": {
             "COLLAPSE_NAVIGATION": "Oculta el menú de navegación",
+            "COLLAPSE_NAVIGATION_ALT": "Icono para contraer el menú de navegación",
             "OPTIONS_SETTINGS": "Configuración y opciones",
             "MY_PROFILE": "Mi Perfil",
-            "EXPAND_NAVIGATION": "Expande el menú de navegación"
+            "EXPAND_NAVIGATION": "Expande el menú de navegación",
+            "EXPAND_SECTION": "Expandir sección",
+            "COLLAPSE_SECTION": "Colapsar sección",
+            "EDIT": "Editar",
+            "CANCEL": "Cancelar",
+            "SAVE": "Guardar"
         },
-        "FOLDER_INFO": {
-            "ICON": "Icono de carpeta",
-            "TITLE": "Información de la carpeta",
+        "NODE_INFO": {
+            "ICON": "Icono de nodo",
+            "TITLE": "Información",
             "SIZE": "Tamaño",
             "NUMBER_OF_FILES": "Número de archivos",
             "CALCULATING": "Calculando...",
-            "CALCULATED_SIZE_LARGE": "{{sizeInBytes}} bytes ({{sizeInLargeUnit}} {{unit}} en el disco) para {{count}} archivos",
-            "CALCULATED_SIZE_NORMAL": "{{sizeInBytes}} bytes para {{count}} archivos",
             "LOCATION": "Ubicación",
+            "REFERENCED": "Referenciado",
             "CREATED": "Creado",
             "MODIFIED": "Modificado",
             "DONE": "Hecho",
             "ERROR": "Algo ha ido mal, cierre este cuadro de diálogo e inténtelo de nuevo"
+        },
+        "ADDITIONAL_REFERENCES_DIALOG": {
+            "TITLE": "Ubicaciones de referencia adicionales",
+            "NO_LOCATIONS": "{{ name }} no está referenciado en ninguna ubicación.",
+            "DESCRIPTION": "{{ name }} está actualmente referenciado en estas ubicaciones.",
+            "CLOSE": "Cerrar"
         }
     },
     "NODE_SELECTOR": {
@@ -565,7 +595,8 @@
     },
     "SEARCH": {
         "BULK_ACTIONS_DROPDOWN": {
-            "TITLE": "Acciones masivas ({{ count }} elementos)",
+            "LABEL": "Acciones masivas",
+            "TITLE": "Seleccionar una acción para los {{ count }} resultados",
             "BULK_NOT_AVAILABLE": "Acciones masivas (no disponible)",
             "BULK_NOT_AVAILABLE_TOOLTIP": "Las acciones masivas no pueden utilizarse sin resultados de búsqueda"
         },
@@ -576,7 +607,12 @@
             "LIBRARIES": "Bibliotecas",
             "MIN_LENGTH": "La cadena de búsqueda debe contener al menos 2 caracteres alfanuméricos",
             "REQUIRED": "Se requiere entrada de búsqueda.",
-            "WHITESPACE": "Entrada de búsqueda no puede ser solo espacio en blanco."
+            "WHITESPACE": "Entrada de búsqueda no puede ser solo espacio en blanco.",
+            "OPERATORS": "La entrada de búsqueda no puede comenzar, terminar o consistir únicamente en operadores",
+            "IN_PREFIX": "En",
+            "FILES_AND_FOLDERS": "Ficheros y carpetas",
+            "RESET": "Restablecer",
+            "SEARCH_IN": "Buscar en"
         },
         "SORT": {
             "SORTING_OPTION": "Clasificar por",
@@ -685,7 +721,8 @@
                 "REFERENCED_DOCUMENTS_HEADER": "Documentos de referencia",
                 "REGENERATION_BUTTON_LABEL": "Regenerar",
                 "COPY_BUTTON_LABEL": "Copiar",
-                "COPY_MESSAGE": "Respuesta copiada al portapapeles"
+                "COPY_MESSAGE": "Respuesta copiada al portapapeles",
+                "RELOAD_REFERENCES_BUTTON_LABEL": "Recargar"
             },
             "AGENTS_BUTTON": {
                 "LABEL": "Preguntar a Discovery",
@@ -701,7 +738,8 @@
                 "AGENTS_FETCHING": "Error al buscar agentes.",
                 "HX_INSIGHT_URL_FETCHING": "Error al buscar URL de HX Insight.",
                 "LOADING_ERROR": "Hmm... parece que algo salió mal.",
-                "PAGE_NOT_AVAILABLE_ERROR": "La página no está disponible para estas condiciones."
+                "PAGE_NOT_AVAILABLE_ERROR": "La página no está disponible para estas condiciones.",
+                "REFERENCES_LOADING_ERROR": "Se ha producido un error al cargar las referencias."
             },
             "DISCARD_CHANGES": {
                 "WARNING": "¡Advertencia!",

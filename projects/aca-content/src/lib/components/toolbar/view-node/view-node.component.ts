@@ -22,7 +22,7 @@
  * from Hyland Software. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input, ViewEncapsulation } from '@angular/core';
+import { Component, inject, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AppStore, getAppSelection, ViewNodeAction } from '@alfresco/aca-shared/store';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -33,7 +33,7 @@ import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
+import { MatMenuItem, MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
 
 @Component({
@@ -59,16 +59,17 @@ import { MatDialogModule } from '@angular/material/dialog';
   host: { class: 'app-view-node' }
 })
 export class ViewNodeComponent {
-  private settings = inject(AppSettingsService);
+  private readonly store = inject<Store<AppStore>>(Store);
+  private readonly router = inject(Router);
+  private readonly autoDownloadService = inject(AutoDownloadService);
+  private readonly activatedRoute = inject(ActivatedRoute);
+
+  private readonly settings = inject(AppSettingsService);
 
   @Input() data: { title?: string; menuButton?: boolean; iconButton?: boolean };
 
-  constructor(
-    private store: Store<AppStore>,
-    private router: Router,
-    private autoDownloadService: AutoDownloadService,
-    private activatedRoute: ActivatedRoute
-  ) {}
+  @ViewChild(MatMenuItem)
+  menuItem: MatMenuItem;
 
   onClick() {
     this.store

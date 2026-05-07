@@ -23,13 +23,12 @@
  */
 
 import { Component, DestroyRef, inject, OnInit, ViewEncapsulation } from '@angular/core';
-import { SavedSearch, SavedSearchesService } from '@alfresco/adf-content-services';
-import { TranslationService, UserPreferencesService, UserPreferenceValues } from '@alfresco/adf-core';
+import { SavedSearch } from '@alfresco/adf-content-services';
+import { TranslationService } from '@alfresco/adf-core';
 import { NavBarLinkRef } from '@alfresco/adf-extensions';
 import { ExpandMenuComponent } from '../../../sidenav/components/expand-menu.component';
-import { AppService } from '@alfresco/aca-shared';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { delay } from 'rxjs/operators';
+import { SavedSearchesContextService } from '../../../../services/saved-searches-context.service';
 
 @Component({
   selector: 'aca-save-search-sidenav',
@@ -38,40 +37,33 @@ import { delay } from 'rxjs/operators';
   encapsulation: ViewEncapsulation.None
 })
 export class SaveSearchSidenavComponent implements OnInit {
-  savedSearchesService = inject(SavedSearchesService);
-  appService = inject(AppService);
+  savedSearchesService = inject(SavedSearchesContextService);
   translationService = inject(TranslationService);
   item: NavBarLinkRef;
 
+  private savedSearchCount = 0;
+  private savedSearches: SavedSearch[];
+
   private readonly manageSearchesId = 'manage-saved-searches';
   private readonly destroyRef = inject(DestroyRef);
-  private readonly userPreferenceService = inject(UserPreferencesService);
-
-  private savedSearchCount = 0;
 
   ngOnInit() {
     this.savedSearchesService.init();
-    this.savedSearchesService.savedSearches$
-      .asObservable()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((savedSearches) => {
-        this.item = this.createNavBarLinkRef(savedSearches);
-        this.savedSearchCount = savedSearches.length;
-      });
-    this.userPreferenceService
-      .select(UserPreferenceValues.Locale)
-      .pipe(takeUntilDestroyed(this.destroyRef), delay(10))
-      .subscribe(() => {
-        if (this.item) {
-          this.item.title = this.translationService.instant('APP.BROWSE.SEARCH.SAVE_SEARCH.NAVBAR.TITLE', { number: this.savedSearchCount });
-        }
-      });
+    this.savedSearchesService.savedSearches$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((savedSearches) => {
+      this.item = this.createNavBarLinkRef(savedSearches);
+      this.savedSearchCount = savedSearches.length;
+      this.savedSearches = savedSearches;
+    });
+    this.translationService.translate.onLangChange.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      if (this.item) {
+        this.item.title = this.translationService.instant('APP.BROWSE.SEARCH.SAVE_SEARCH.NAVBAR.TITLE', { number: this.savedSearchCount });
+      }
+    });
   }
 
-  onActionClick(el: NavBarLinkRef): void {
-    if (el.id !== this.manageSearchesId) {
-      this.appService.appNavNarMode$.next('collapsed');
-    }
+  onActionClicked(selectedLinkRef: NavBarLinkRef): void {
+    const selectedSavedSearch = this.savedSearches?.find((savedSearch) => savedSearch.name === selectedLinkRef.title);
+    this.savedSearchesService.currentContextSavedSearch = selectedSavedSearch;
   }
 
   private createNavBarLinkRef(children: SavedSearch[]): NavBarLinkRef {

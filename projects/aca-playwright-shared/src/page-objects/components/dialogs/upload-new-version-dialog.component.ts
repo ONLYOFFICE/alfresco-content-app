@@ -26,12 +26,11 @@ import { Page } from '@playwright/test';
 import { BaseComponent } from '../base.component';
 
 export class UploadNewVersionDialog extends BaseComponent {
-  private static rootElement = 'adf-new-version-uploader-dialog';
+  private static readonly rootElement = 'adf-new-version-uploader-dialog';
 
   public cancelButton = this.getChild('#adf-new-version-cancel');
   public uploadButton = this.getChild('[data-automation-id="adf-new-version-file-upload"]');
   public majorOption = this.getChild('#adf-new-version-major');
-  public minorOption = this.getChild('#adf-new-version-minor');
   public description = this.getChild('#adf-new-version-text-area');
   public title = this.getChild(' [data-automation-id="new-version-uploader-dialog-title"]');
 

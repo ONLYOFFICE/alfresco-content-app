@@ -19,7 +19,13 @@
         "DESCRIPTION": "说明",
         "WHEN": "什么时候",
         "PERFORM_ACTIONS": "执行操作",
-        "OPTIONS": "其他选项"
+        "OPTIONS": "其他选项",
+        "FIELD": "字段",
+        "COMPARATOR": "比较符",
+        "VALUE": "值",
+        "LOGIC_OPERATOR": "逻辑运算符",
+        "GROUP_CONDITIONS": "分组条件",
+        "CONDITIONS": "条件"
       },
       "PLACEHOLDER": {
         "NAME": "输入规则名称",
@@ -31,7 +37,8 @@
       "ERROR": {
         "REQUIRED": "此字段为必填字段",
         "RULE_COMPOSITE_CONDITION_INVALID": "一个或多个条件组为空",
-        "INSUFFICIENT_TRIGGERS_SELECTED": "至少需要一个触发器"
+        "INSUFFICIENT_TRIGGERS_SELECTED": "至少需要一个触发器",
+        "ACTION_REQUIRED": "操作字段为必填项"
       },
       "TRIGGERS": {
         "INBOUND": "项目被创建或进入此文件夹",
@@ -124,9 +131,10 @@
       "LOAD_MORE_RULE_SETS": "加载来自其他文件夹的规则",
       "LOAD_MORE_RULES": "加载更多规则",
       "LOADING_RULES": "正在加载规则",
-      "TOGGLE_RULE_STATE": "切换规则已启用状态",
+      "TOGGLE_RULE_STATE": "切换 {{ name }} 规则",
       "INHERITED_RULES_WILL_BE_RUN_FIRST": "首先运行继承的规则",
-      "ALL_LINKED_RULES_ARE_DISABLED": "禁用从此规则集链接的所有规则"
+      "ALL_LINKED_RULES_ARE_DISABLED": "禁用从此规则集链接的所有规则",
+      "EDIT_LINK_LABEL": "从另一个文件夹链接规则"
     },
     "LINK_RULES_DIALOG": {
       "TITLE": "选择要从中链接规则的文件夹",

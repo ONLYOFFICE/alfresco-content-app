@@ -21,7 +21,6 @@
     "host": "{protocol}//{hostname}{:port}/auth/realms/alfresco",
     "clientId": "alfresco",
     "scope": "openid",
-    "secret": "",
     "implicitFlow": false,
     "codeFlow": true,
     "silentLogin": true,
@@ -35,7 +34,7 @@
   "locale": "en",
   "application": {
     "name": "Workspace",
-    "version": "7.1.0",
+    "version": "7.4.1",
     "logo": "assets/images/app-logo.svg",
     "copyright": "APP.COPYRIGHT"
   },

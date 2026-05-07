@@ -24,8 +24,8 @@
 
 import { TestBed, fakeAsync, tick, ComponentFixture } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA, SimpleChange, SimpleChanges } from '@angular/core';
-import { Router, ActivatedRoute, convertToParamMap } from '@angular/router';
-import { DocumentListService, FilterSearch, UploadService } from '@alfresco/adf-content-services';
+import { Router, ActivatedRoute, convertToParamMap, ParamMap } from '@angular/router';
+import { DocumentListService, FilterSearch, SearchHeaderQueryBuilderService, UploadService } from '@alfresco/adf-content-services';
 import { NodeActionsService } from '../../services/node-actions.service';
 import { FilesComponent } from './files.component';
 import { AppTestingModule } from '../../testing/app-testing.module';
@@ -57,6 +57,8 @@ describe('FilesComponent', () => {
     events: new Subject()
   };
 
+  let searchHeaderQueryBuilderService: SearchHeaderQueryBuilderService;
+
   let spyContent = null;
   let loadFolderByNodeIdSpy: jasmine.Spy;
   let unitTestingUtils: UnitTestingUtils;
@@ -72,6 +74,11 @@ describe('FilesComponent', () => {
     expect(template).not.toBeNull();
   }
 
+  function getEncodedParamMap(initialQuery = { checkList: 'TYPE:"cm:folder"' }): ParamMap {
+    const encoded = btoa(JSON.stringify(initialQuery));
+    return convertToParamMap({ q: encoded });
+  }
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [AppTestingModule, FilesComponent, MatSnackBarModule],
@@ -85,7 +92,7 @@ describe('FilesComponent', () => {
           useValue: {
             snapshot: { data: { preferencePrefix: 'prefix' }, paramMap: convertToParamMap({ folderId: undefined }) },
             params: of({ folderId: 'someId' }),
-            queryParamMap: of({})
+            queryParamMap: of(convertToParamMap({}))
           }
         },
         AppExtensionService,
@@ -112,6 +119,10 @@ describe('FilesComponent', () => {
     store = TestBed.inject(MockStore);
     spyContent = spyOn(contentApi, 'getNode');
     unitTestingUtils = new UnitTestingUtils(fixture.debugElement);
+
+    searchHeaderQueryBuilderService = TestBed.inject(SearchHeaderQueryBuilderService);
+    spyOn(searchHeaderQueryBuilderService, 'resetActiveFilters').and.stub();
+    spyOn(searchHeaderQueryBuilderService.populateFilters, 'next').and.stub();
   });
 
   beforeEach(() => {
@@ -190,8 +201,38 @@ describe('FilesComponent', () => {
       expect(router.navigate['calls'].argsFor(0)[0]).toEqual(['/personal-files', 'parent-id']);
     });
 
+    it('should set decoded query to components queryParams property and populate filters', () => {
+      const initialQuery = { checkList: 'TYPE:"cm:folder"' };
+
+      const mockParamMap = getEncodedParamMap(initialQuery);
+
+      Object.defineProperty(route, 'queryParamMap', {
+        value: of(mockParamMap)
+      });
+
+      fixture.detectChanges();
+
+      expect(component.queryParams).toEqual(initialQuery);
+      expect(searchHeaderQueryBuilderService.populateFilters.next).toHaveBeenCalledWith(initialQuery);
+    });
+
+    it('should call reset filters when queryParams is nullish', () => {
+      Object.defineProperty(route, 'queryParamMap', {
+        value: of(convertToParamMap({}))
+      });
+
+      fixture.detectChanges();
+
+      expect(searchHeaderQueryBuilderService.resetActiveFilters).toHaveBeenCalled();
+      expect(component.queryParams).toBeNull();
+    });
+
     it('should check isFilterHeaderActive to be true when filters are present in queryParamMap', () => {
-      Object.defineProperty(route, 'queryParamMap', { value: of({ params: { $thumbnail: 'TYPE:"cm:folder"' } }) });
+      const mockParamMap = getEncodedParamMap();
+
+      Object.defineProperty(route, 'queryParamMap', {
+        value: of(mockParamMap)
+      });
 
       fixture.detectChanges();
 
@@ -526,6 +567,20 @@ describe('FilesComponent', () => {
       fixture.detectChanges();
 
       expect(component.documentList.displayDragAndDropHint).toBeFalsy();
+    });
+
+    it('should bind isDataProvidedExternally based on queryParams property truthiness', () => {
+      fixture.detectChanges();
+
+      component.queryParams = { checkList: 'TYPE:"cm:folder"' };
+      fixture.detectChanges();
+
+      expect(component.documentList.isDataProvidedExternally).toBe(true);
+
+      component.queryParams = null;
+      fixture.detectChanges();
+
+      expect(component.documentList.isDataProvidedExternally).toBe(false);
     });
   });
 

@@ -46,11 +46,12 @@ import {
   UploadDialog,
   SnackBarComponent,
   EditDialog,
-  FolderInformationDialogComponent
+  FolderInformationDialogComponent,
+  EditModeComponent
 } from '../components';
 
 export class PersonalFilesPage extends BasePage {
-  private static pageUrl = 'personal-files';
+  private static readonly pageUrl = 'personal-files';
 
   constructor(page: Page) {
     super(page, PersonalFilesPage.pageUrl);
@@ -72,6 +73,7 @@ export class PersonalFilesPage extends BasePage {
   public shareDialog = new ShareDialogComponent(this.page);
   public confirmDialog = new AdfConfirmDialogComponent(this.page);
   public infoDrawer = new AdfInfoDrawerComponent(this.page);
+  public nodeInfoEditMode = new EditModeComponent(this.page);
   public uploadNewVersionDialog = new UploadNewVersionDialog(this.page);
   public manageVersionsDialog = new ManageVersionsDialog(this.page);
   public uploadDialog = new UploadDialog(this.page);

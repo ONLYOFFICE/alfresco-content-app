@@ -19,7 +19,13 @@
         "DESCRIPTION": "説明",
         "WHEN": "日時",
         "PERFORM_ACTIONS": "アクションの実行",
-        "OPTIONS": "他のオプション"
+        "OPTIONS": "他のオプション",
+        "FIELD": "フィールド",
+        "COMPARATOR": "コンパレーター",
+        "VALUE": "値",
+        "LOGIC_OPERATOR": "論理演算子",
+        "GROUP_CONDITIONS": "グループ条件",
+        "CONDITIONS": "条件"
       },
       "PLACEHOLDER": {
         "NAME": "ルールの名前を入力します",
@@ -31,7 +37,8 @@
       "ERROR": {
         "REQUIRED": "このフィールドは必須です",
         "RULE_COMPOSITE_CONDITION_INVALID": "1つ以上の条件グループが空です",
-        "INSUFFICIENT_TRIGGERS_SELECTED": "少なくとも1つのトリガーが必要です"
+        "INSUFFICIENT_TRIGGERS_SELECTED": "少なくとも1つのトリガーが必要です",
+        "ACTION_REQUIRED": "アクション項目は必須です"
       },
       "TRIGGERS": {
         "INBOUND": "アイタムがこのフォルダに作成または入力される",
@@ -124,9 +131,10 @@
       "LOAD_MORE_RULE_SETS": "他のフォルダからユールを読み込む",
       "LOAD_MORE_RULES": "さらにルールを読み込む",
       "LOADING_RULES": "ルールの読み込み中",
-      "TOGGLE_RULE_STATE": "切替ルール有効状態",
+      "TOGGLE_RULE_STATE": "{{ name }} ルールに切り替える",
       "INHERITED_RULES_WILL_BE_RUN_FIRST": "継承されたルールが最初に実行されます",
-      "ALL_LINKED_RULES_ARE_DISABLED": "このルールセットからリンクされているすべてのルールは無効です"
+      "ALL_LINKED_RULES_ARE_DISABLED": "このルールセットからリンクされているすべてのルールは無効です",
+      "EDIT_LINK_LABEL": "別のフォルダからリンクルールを移動する"
     },
     "LINK_RULES_DIALOG": {
       "TITLE": "ルールをリンクさせるフォルダを選択",

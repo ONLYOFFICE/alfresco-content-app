@@ -27,7 +27,7 @@ import {
   ConditionComponent,
   ManageRules,
   ManageRulesDialogComponent,
-  ToolbarComponent,
+  RulesToolbarComponent,
   ActionsDropdownComponent,
   ContentNodeSelectorDialog,
   LinkRulesDialog
@@ -35,13 +35,13 @@ import {
 import { BasePage } from './base.page';
 
 export class NodesPage extends BasePage {
-  private static pageUrl = 'nodes';
+  private static readonly pageUrl = 'nodes';
 
   constructor(page: Page) {
     super(page, NodesPage.pageUrl);
   }
 
-  public toolbar = new ToolbarComponent(this.page);
+  public rulesToolbar = new RulesToolbarComponent(this.page);
   public manageRulesDialog = new ManageRulesDialogComponent(this.page);
   public actionsDropdown = new ActionsDropdownComponent(this.page);
   public conditionsDropdown = new ConditionComponent(this.page);

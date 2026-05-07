@@ -19,7 +19,13 @@
         "DESCRIPTION": "Beskrivelse",
         "WHEN": "Når",
         "PERFORM_ACTIONS": "Utfør handlinger",
-        "OPTIONS": "Andre valg"
+        "OPTIONS": "Andre valg",
+        "FIELD": "Felt",
+        "COMPARATOR": "Komparator",
+        "VALUE": "Verdi",
+        "LOGIC_OPERATOR": "Logisk operator",
+        "GROUP_CONDITIONS": "Gruppebetingelser",
+        "CONDITIONS": "Betingelser"
       },
       "PLACEHOLDER": {
         "NAME": "Angi regelnavn",
@@ -31,7 +37,8 @@
       "ERROR": {
         "REQUIRED": "Dette feltet er obligatorisk",
         "RULE_COMPOSITE_CONDITION_INVALID": "En eller flere betingelsesgrupper er tomme",
-        "INSUFFICIENT_TRIGGERS_SELECTED": "Minst én trigger er nødvendig"
+        "INSUFFICIENT_TRIGGERS_SELECTED": "Minst én trigger er nødvendig",
+        "ACTION_REQUIRED": "Felt for handling er obligatorisk"
       },
       "TRIGGERS": {
         "INBOUND": "Elementene er opprettet eller inn i denne mappen",
@@ -124,9 +131,10 @@
       "LOAD_MORE_RULE_SETS": "Last regler fra andre mapper",
       "LOAD_MORE_RULES": "Last flere regler",
       "LOADING_RULES": "Laster regler",
-      "TOGGLE_RULE_STATE": "Veksle regelaktivert status",
+      "TOGGLE_RULE_STATE": "Veksle {{ name }} regel",
       "INHERITED_RULES_WILL_BE_RUN_FIRST": "Arvede regler vil bli kjørt først",
-      "ALL_LINKED_RULES_ARE_DISABLED": "Alle regler som er koblet fra dette regelsettet, er deaktivert"
+      "ALL_LINKED_RULES_ARE_DISABLED": "Alle regler som er koblet fra dette regelsettet, er deaktivert",
+      "EDIT_LINK_LABEL": "Koble til regler fra en annen mappe"
     },
     "LINK_RULES_DIALOG": {
       "TITLE": "Velg en mappe du vil koble til regler fra",

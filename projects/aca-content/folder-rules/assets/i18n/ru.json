@@ -19,7 +19,13 @@
         "DESCRIPTION": "Описание",
         "WHEN": "Когда",
         "PERFORM_ACTIONS": "Выполнить действия",
-        "OPTIONS": "Другие параметры"
+        "OPTIONS": "Другие параметры",
+        "FIELD": "Поле",
+        "COMPARATOR": "Компаратор",
+        "VALUE": "Значение",
+        "LOGIC_OPERATOR": "Логический оператор",
+        "GROUP_CONDITIONS": "Условия группы",
+        "CONDITIONS": "Условия"
       },
       "PLACEHOLDER": {
         "NAME": "Введите имя правила",
@@ -31,7 +37,8 @@
       "ERROR": {
         "REQUIRED": "Поле обязательно для заполнения",
         "RULE_COMPOSITE_CONDITION_INVALID": "Одна или несколько групп условий пустые",
-        "INSUFFICIENT_TRIGGERS_SELECTED": "Требуется как минимум один триггер"
+        "INSUFFICIENT_TRIGGERS_SELECTED": "Требуется как минимум один триггер",
+        "ACTION_REQUIRED": "Поле действия является обязательным"
       },
       "TRIGGERS": {
         "INBOUND": "Элементы создаются или попадают в эту папку",
@@ -124,9 +131,10 @@
       "LOAD_MORE_RULE_SETS": "Загрузить правила из других папок",
       "LOAD_MORE_RULES": "Загрузить другие правила",
       "LOADING_RULES": "Загрузка правил",
-      "TOGGLE_RULE_STATE": "Переключить состояние включенного правила",
+      "TOGGLE_RULE_STATE": "Переключить правило {{ name }}",
       "INHERITED_RULES_WILL_BE_RUN_FIRST": "Унаследованные правила будут выполняться в первую очередь",
-      "ALL_LINKED_RULES_ARE_DISABLED": "Все правила, привязанные из этого набора правил, отключены"
+      "ALL_LINKED_RULES_ARE_DISABLED": "Все правила, привязанные из этого набора правил, отключены",
+      "EDIT_LINK_LABEL": "Правила ссылки из другой папки"
     },
     "LINK_RULES_DIALOG": {
       "TITLE": "Выберите папку, из которой будут взяты правила",

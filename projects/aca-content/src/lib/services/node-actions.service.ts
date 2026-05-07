@@ -22,7 +22,7 @@
  * from Hyland Software. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, Subject, of, zip, from } from 'rxjs';
 import { ThumbnailService, TranslationService } from '@alfresco/adf-core';
@@ -36,36 +36,41 @@ import {
   NodeAction,
   ContentService
 } from '@alfresco/adf-content-services';
-import { NodeEntry, Node, SitePaging, NodeChildAssociationPaging, NodeChildAssociationEntry, NodesApi, Site, SitePagingList } from '@alfresco/js-api';
+import {
+  NodeEntry,
+  Node,
+  SitePaging,
+  NodeChildAssociationPaging,
+  NodeChildAssociationEntry,
+  NodesApi,
+  Site,
+  SitePagingList,
+  LazyApi
+} from '@alfresco/js-api';
 import { ContentApiService } from '@alfresco/aca-shared';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 
-type BatchOperationType = Extract<NodeAction, NodeAction.COPY | NodeAction.MOVE>;
+type BatchOperationType = Extract<NodeAction, 'COPY' | 'MOVE'>;
 
 @Injectable({
   providedIn: 'root'
 })
 export class NodeActionsService {
+  private readonly contentService = inject(ContentService);
+  private readonly contentApi = inject(ContentApiService);
+  private readonly dialog = inject(MatDialog);
+  private readonly documentListService = inject(DocumentListService);
+  private readonly apiService = inject(AlfrescoApiService);
+  private readonly translation = inject(TranslationService);
+  private readonly thumbnailService = inject(ThumbnailService);
+
   contentCopied: Subject<NodeEntry[]> = new Subject<NodeEntry[]>();
   contentMoved: Subject<any> = new Subject<any>();
   moveDeletedEntries: any[] = [];
   isSitesDestinationAvailable = false;
 
-  _nodesApi: NodesApi;
-  get nodesApi(): NodesApi {
-    this._nodesApi = this._nodesApi ?? new NodesApi(this.apiService.getInstance());
-    return this._nodesApi;
-  }
-
-  constructor(
-    private contentService: ContentService,
-    private contentApi: ContentApiService,
-    private dialog: MatDialog,
-    private documentListService: DocumentListService,
-    private apiService: AlfrescoApiService,
-    private translation: TranslationService,
-    private thumbnailService: ThumbnailService
-  ) {}
+  @LazyApi((self: NodeActionsService) => new NodesApi(self.apiService.getInstance()))
+  declare nodesApi: NodesApi;
 
   /**
    * Copy node list

@@ -34,7 +34,8 @@
                 "TITLE": "Paketit",
                 "NAME": "Nimi",
                 "VERSION": "Versio"
-            }
+            },
+            "BACK_BUTTON_LABEL": "Palaa takaisin"
         },
         "LANGUAGE": "Kieli",
         "SIGN_IN": "Kirjaudu sisään",
@@ -51,19 +52,14 @@
             "LOCATION": "Sijainti",
             "TELEPHONE": "Kotipuhelinnumero",
             "MOBILE": "Matkapuhelinnumero",
-            "LOGIN": "Kirjaudu sisään",
-            "USERNAME": "Käyttäjänimi",
             "EMAIL": "Sähköposti",
-            "PASSWORD": "Salasana",
-            "OLD_PASSWORD": "Vanha salasana",
-            "FORGOT_PASSWORD": "Unohtuiko salasana?",
-            "NEW_PASSWORD": "Uusi salasana",
-            "VERIFY_PASSWORD": "Vahvista salasana",
             "COMPANY_DETAILS": "Yhtiön tiedot",
             "NAME": "Nimi",
             "ADDRESS": "Osoite",
             "POSTCODE": "Postinumero",
-            "INVALID_INPUT": "Syöte ei kelpaa"
+            "INVALID_PHONE_FORMAT": "Anna voimassa oleva puhelinnumero",
+            "INVALID_EMAIL_FORMAT": "Anna voimassa oleva sähköpostiosoite",
+            "GO_TO_PERSONAL_FILES_BUTTON_LABEL": "Siirry henkilökohtaisiin tiedostoihin"
         },
         "LOCKED_BY": "Lukinnut: ",
         "PREVIEW": {
@@ -118,6 +114,13 @@
                     "TITLE": "Oikeudet"
                 }
             },
+            "REPOSITORY_VIEW": {
+                "TITLE": "Repository",
+                "SIDENAV_LINK": {
+                    "LABEL": "Repository",
+                    "TOOLTIP": "View the repository"
+                }
+            },
             "LIBRARIES": {
                 "TITLE": "Tiedostokirjastot",
                 "DESCRIPTION": "Käytä tiedostokirjastoja",
@@ -133,6 +136,10 @@
                     "FAVORITE_LIBRARIES": {
                         "TITLE": "Ei suosikkikirjastoja",
                         "TEXT": "Voit lisätä suosikkeihin kirjastoja, jotka haluat löytää helposti myöhemmin."
+                    },
+                    "ALL_LIBRARIES": {
+                        "TITLE": "Kirjastoa ei löytynyt",
+                        "TEXT": "Luo uusi kirjasto päästäksesi alkuun."
                     }
                 },
                 "MENU": {
@@ -148,6 +155,13 @@
                         "SIDENAV_LINK": {
                             "LABEL": "Suosikkikirjastot",
                             "TOOLTIP": "Siirry omiin suosikkikirjastoihin"
+                        }
+                    },
+                    "ALL_LIBRARIES": {
+                        "TITLE": "Kaikki Kirjastot",
+                        "SIDENAV_LINK": {
+                            "LABEL": "Kaikki Kirjastot",
+                            "TOOLTIP": "Käytä kaikkia kirjastoja"
                         }
                     }
                 },
@@ -260,7 +274,8 @@
                     "LOCATION": "Sijainti",
                     "SIZE": "Koko"
                 },
-                "UNKNOWN_LOCATION": "Tuntematon",
+                "UNKNOWN_LOCATION": "Sinulla ei ole oikeutta tarkastella tämän asiakirjan sijaintia.",
+                "VIEW_ADDITIONAL_LOCATIONS": "Näytä lisäviittauskohteet",
                 "NO_RESULTS": "Hakusi ei tuottanut yhtään tulosta",
                 "EMPTY_SEARCH": "Hakutermi on pakollinen",
                 "NO_FILTER_RESULTS": "Suodatin ei tuottanut yhtään tulosta",
@@ -305,7 +320,7 @@
             "EDIT_OFFLINE_CANCEL": "Peruuta muokkaus",
             "CHANGE_ASPECT": "Muokkaa ominaisuusjoukkoja",
             "ADD_ASPECTS": "Lisää näkymiä",
-            "FOLDER_INFO": "Kansion Tiedot"
+            "NODE_INFO": "Tiedot"
         },
         "DIALOGS": {
             "CONFIRM_PURGE": {
@@ -420,6 +435,10 @@
                         "FAIL": "{{ failed }} kohteen siirtäminen ei onnistunut."
                     }
                 },
+                "NODE_CREATE": {
+                    "FILE_FROM_TEMPLATE_SUCCESS": "Tiedosto {{ name }} luotiin mallista",
+                    "FOLDER_FROM_TEMPLATE_SUCCESS": "Kansio {{ name }} luotiin mallista"
+                },
                 "LIBRARY_DELETED": "Kirjasto poistettiin",
                 "LEFT_LIBRARY": "Olet poistunut kirjastosta",
                 "FAVORITE_NODE_ADDED": "{{ name }} lisätty suosikkeihin",
@@ -459,23 +478,34 @@
         },
         "TOOLTIPS": {
             "COLLAPSE_NAVIGATION": "Kutista siirtymisvalikko",
+            "COLLAPSE_NAVIGATION_ALT": "Navigointivalikon supistuskuvake",
             "OPTIONS_SETTINGS": "Asetukset ja vaihtoehdot",
             "MY_PROFILE": "Oma profiili",
-            "EXPAND_NAVIGATION": "Laajenna siirtymisvalikko"
+            "EXPAND_NAVIGATION": "Laajenna siirtymisvalikko",
+            "EXPAND_SECTION": "Laajenna osio",
+            "COLLAPSE_SECTION": "Kutista osio",
+            "EDIT": "Muokkaa",
+            "CANCEL": "Peruuta",
+            "SAVE": "Tallenna"
         },
-        "FOLDER_INFO": {
-            "ICON": "Kansion Kuvake",
-            "TITLE": "Kansion Tiedot",
+        "NODE_INFO": {
+            "ICON": "Solmukuvake",
+            "TITLE": "Tiedot",
             "SIZE": "Koko",
             "NUMBER_OF_FILES": "Tiedostojen määrä",
             "CALCULATING": "Lasketaan...",
-            "CALCULATED_SIZE_LARGE": "{{sizeInBytes}} tavuja ({{sizeInLargeUnit}} {{unit}} levyllä) {{count}}-tiedostoille {{count}}",
-            "CALCULATED_SIZE_NORMAL": "{{sizeInBytes}} tavua {{count}}-tiedostoille {{count}}",
             "LOCATION": "Sijainti",
+            "REFERENCED": "Viitattu",
             "CREATED": "Luotu",
             "MODIFIED": "Muokattu",
             "DONE": "Valmis",
             "ERROR": "Jokin meni pieleen, sulje tämä valintaikkuna ja yritä uudestaan"
+        },
+        "ADDITIONAL_REFERENCES_DIALOG": {
+            "TITLE": "Lisäviittauskohde",
+            "NO_LOCATIONS": "{{ name }} ei ole viitattu missään sijainnissa.",
+            "DESCRIPTION": "{{ name }} on tällä hetkellä viitattu näissä sijainneissa.",
+            "CLOSE": "Sulje"
         }
     },
     "NODE_SELECTOR": {
@@ -565,7 +595,8 @@
     },
     "SEARCH": {
         "BULK_ACTIONS_DROPDOWN": {
-            "TITLE": "Joukkotoiminnot ({{ count }} kohdetta)",
+            "LABEL": "Joukkotoiminnot",
+            "TITLE": "Valitse toiminto kaikille {{ count }} tulokselle",
             "BULK_NOT_AVAILABLE": "Joukkotoiminnot (ei käytettävissä)",
             "BULK_NOT_AVAILABLE_TOOLTIP": "Joukkotoimintoja ei voida käyttää ilman hakutuloksia"
         },
@@ -576,7 +607,12 @@
             "LIBRARIES": "Kirjastot",
             "MIN_LENGTH": "Hakuehdoissa täytyy olla vähintään kaksi aakkosnumeerista merkkiä.",
             "REQUIRED": "Hakusyöte on pakollinen.",
-            "WHITESPACE": "Hakusyöte ei voi olla vain valkoinen."
+            "WHITESPACE": "Hakusyöte ei voi olla vain valkoinen.",
+            "OPERATORS": "Hakusyöte ei voi alkaa tai päättyä operaattoreihin eikä koostua pelkästään niistä",
+            "IN_PREFIX": "Kohteessa",
+            "FILES_AND_FOLDERS": "Tiedostot ja kansiot",
+            "RESET": "Palauta",
+            "SEARCH_IN": "Hae kohteessa"
         },
         "SORT": {
             "SORTING_OPTION": "Järjestä",
@@ -685,7 +721,8 @@
                 "REFERENCED_DOCUMENTS_HEADER": "Viitatut asiakirjat",
                 "REGENERATION_BUTTON_LABEL": "Luo uudelleen",
                 "COPY_BUTTON_LABEL": "Kopioi",
-                "COPY_MESSAGE": "Vastaus kopioitu leikepöydälle"
+                "COPY_MESSAGE": "Vastaus kopioitu leikepöydälle",
+                "RELOAD_REFERENCES_BUTTON_LABEL": "Lataa uudelleen"
             },
             "AGENTS_BUTTON": {
                 "LABEL": "Kysy Discoveryltä",
@@ -701,7 +738,8 @@
                 "AGENTS_FETCHING": "Virhe agenttien hakemisessa",
                 "HX_INSIGHT_URL_FETCHING": "Virhe HX Insight URL -osoitteen hakemisessa",
                 "LOADING_ERROR": "Hmm... jotakin näyttäisi menneen pieleen.",
-                "PAGE_NOT_AVAILABLE_ERROR": "Sivu ei ole saatavilla näillä ehdoilla."
+                "PAGE_NOT_AVAILABLE_ERROR": "Sivu ei ole saatavilla näillä ehdoilla.",
+                "REFERENCES_LOADING_ERROR": "Jotain meni vikaan viitteiden lataamisen aikana."
             },
             "DISCARD_CHANGES": {
                 "WARNING": "Varoitus!",

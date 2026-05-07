@@ -19,7 +19,13 @@
         "DESCRIPTION": "Beschreibung",
         "WHEN": "Wenn",
         "PERFORM_ACTIONS": "Aktionen durchführen",
-        "OPTIONS": "Andere Optionen"
+        "OPTIONS": "Andere Optionen",
+        "FIELD": "Feld",
+        "COMPARATOR": "Vergleicher",
+        "VALUE": "Wert",
+        "LOGIC_OPERATOR": "Logischer Operator",
+        "GROUP_CONDITIONS": "Gruppenbedingungen",
+        "CONDITIONS": "Bedingungen"
       },
       "PLACEHOLDER": {
         "NAME": "Regelname eingeben",
@@ -31,7 +37,8 @@
       "ERROR": {
         "REQUIRED": "Dieses Feld ist erforderlich",
         "RULE_COMPOSITE_CONDITION_INVALID": "Eine oder mehrere Konditionsgruppen sind leer",
-        "INSUFFICIENT_TRIGGERS_SELECTED": "Mindestens ein Auslöser ist erforderlich"
+        "INSUFFICIENT_TRIGGERS_SELECTED": "Mindestens ein Auslöser ist erforderlich",
+        "ACTION_REQUIRED": "Aktionsfeld ist erforderlich"
       },
       "TRIGGERS": {
         "INBOUND": "Elemente werden erstellt oder in diesen Ordner eingegeben",
@@ -124,9 +131,10 @@
       "LOAD_MORE_RULE_SETS": "Regeln aus anderen Ordnern laden",
       "LOAD_MORE_RULES": "Weitere Regeln laden",
       "LOADING_RULES": "Regeln werden geladen",
-      "TOGGLE_RULE_STATE": "Status der Regelaktivierung umschalten",
+      "TOGGLE_RULE_STATE": "{{ name }} Regel umschalten",
       "INHERITED_RULES_WILL_BE_RUN_FIRST": "Vererbte Regeln werden zuerst ausgeführt",
-      "ALL_LINKED_RULES_ARE_DISABLED": "Alle von diesem Regelsatz verknüpften Regeln sind deaktiviert"
+      "ALL_LINKED_RULES_ARE_DISABLED": "Alle von diesem Regelsatz verknüpften Regeln sind deaktiviert",
+      "EDIT_LINK_LABEL": "Link-Regeln aus einem anderen Ordner"
     },
     "LINK_RULES_DIALOG": {
       "TITLE": "Wählen Sie einen Ordner für die Verknüpfung von Regeln aus",

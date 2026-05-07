@@ -53,7 +53,7 @@ import { AppConfigService, AuthenticationService, LogService } from '@alfresco/a
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { NodeEntry, RepositoryInfo } from '@alfresco/js-api';
 import { ViewerRules } from '../models/viewer.rules';
-import { Badge } from '../models/types';
+import { Badge, UserProfileSection } from '../models/types';
 import { NodePermissionService } from '../services/node-permission.service';
 import { map } from 'rxjs/operators';
 import { SearchCategory } from '@alfresco/adf-content-services';
@@ -71,7 +71,17 @@ export function provideContentAppExtensions(): EnvironmentProviders[] {
   providedIn: 'root'
 })
 export class AppExtensionService implements RuleContext {
-  private _references = new BehaviorSubject<ExtensionRef[]>([]);
+  readonly auth = inject(AuthenticationService);
+  protected readonly store = inject<Store<AppStore>>(Store);
+  protected readonly loader = inject(ExtensionLoaderService);
+  protected readonly extensions = inject(ExtensionService);
+  readonly permissions = inject(NodePermissionService);
+  readonly appConfig = inject(AppConfigService);
+  protected readonly matIconRegistry = inject(MatIconRegistry);
+  protected readonly sanitizer = inject(DomSanitizer);
+  protected readonly logger = inject(LogService);
+
+  private readonly _references = new BehaviorSubject<ExtensionRef[]>([]);
   bulkActionExecuted$ = new Subject<void>();
 
   navbar: Array<NavBarGroupRef> = [];
@@ -80,18 +90,19 @@ export class AppExtensionService implements RuleContext {
   search: any;
   viewerRules: ViewerRules = {};
 
-  private _headerActions = new BehaviorSubject<Array<ContentActionRef>>([]);
-  private _toolbarActions = new BehaviorSubject<Array<ContentActionRef>>([]);
-  private _viewerToolbarActions = new BehaviorSubject<Array<ContentActionRef>>([]);
-  private _sharedLinkViewerToolbarActions = new BehaviorSubject<Array<ContentActionRef>>([]);
-  private _contextMenuActions = new BehaviorSubject<Array<ContentActionRef>>([]);
-  private _openWithActions = new BehaviorSubject<Array<ContentActionRef>>([]);
-  private _createActions = new BehaviorSubject<Array<ContentActionRef>>([]);
-  private _sidebarActions = new BehaviorSubject<Array<ContentActionRef>>([]);
-  private _badges = new BehaviorSubject<Array<Badge>>([]);
-  private _filesDocumentListPreset = new BehaviorSubject<Array<DocumentListPresetRef>>([]);
-  private _customMetadataPanels = new BehaviorSubject<Array<ContentActionRef>>([]);
-  private _bulkActions = new BehaviorSubject<Array<ContentActionRef>>([]);
+  private readonly _headerActions = new BehaviorSubject<Array<ContentActionRef>>([]);
+  private readonly _toolbarActions = new BehaviorSubject<Array<ContentActionRef>>([]);
+  private readonly _viewerToolbarActions = new BehaviorSubject<Array<ContentActionRef>>([]);
+  private readonly _sharedLinkViewerToolbarActions = new BehaviorSubject<Array<ContentActionRef>>([]);
+  private readonly _contextMenuActions = new BehaviorSubject<Array<ContentActionRef>>([]);
+  private readonly _openWithActions = new BehaviorSubject<Array<ContentActionRef>>([]);
+  private readonly _createActions = new BehaviorSubject<Array<ContentActionRef>>([]);
+  private readonly _sidebarActions = new BehaviorSubject<Array<ContentActionRef>>([]);
+  private readonly _badges = new BehaviorSubject<Array<Badge>>([]);
+  private readonly _filesDocumentListPreset = new BehaviorSubject<Array<DocumentListPresetRef>>([]);
+  private readonly _customMetadataPanels = new BehaviorSubject<Array<ContentActionRef>>([]);
+  private readonly _bulkActions = new BehaviorSubject<Array<ContentActionRef>>([]);
+  private readonly _userProfileSections = new BehaviorSubject<Array<UserProfileSection>>([]);
 
   documentListPresets: {
     libraries: Array<DocumentListPresetRef>;
@@ -124,17 +135,7 @@ export class AppExtensionService implements RuleContext {
 
   config: ExtensionConfig;
 
-  constructor(
-    public auth: AuthenticationService,
-    protected store: Store<AppStore>,
-    protected loader: ExtensionLoaderService,
-    protected extensions: ExtensionService,
-    public permissions: NodePermissionService,
-    public appConfig: AppConfigService,
-    protected matIconRegistry: MatIconRegistry,
-    protected sanitizer: DomSanitizer,
-    protected logger: LogService
-  ) {
+  constructor() {
     this.references$ = this._references.asObservable();
 
     this.store.select(getRuleContext).subscribe((result) => {
@@ -169,6 +170,7 @@ export class AppExtensionService implements RuleContext {
     this._openWithActions.next(this.loader.getContentActions(config, 'features.viewer.openWith'));
     this._createActions.next(this.loader.getElements<ContentActionRef>(config, 'features.create'));
     this._badges.next(this.loader.getElements<Badge>(config, 'features.badges'));
+    this._userProfileSections.next(this.loader.getElements<UserProfileSection>(config, 'features.userProfileSections'));
     this._filesDocumentListPreset.next(this.getDocumentListPreset(config, 'files'));
     this._customMetadataPanels.next(this.loader.getElements<ContentActionRef>(config, 'features.customMetadataPanels'));
     this._bulkActions.next(this.loader.getElements<ContentActionRef>(config, 'features.bulk-actions'));
@@ -384,6 +386,10 @@ export class AppExtensionService implements RuleContext {
     return this._badges.pipe(map((badges) => badges.filter((badge) => this.evaluateRule(badge.rules.visible, node))));
   }
 
+  getUserProfileSections(): Observable<Array<UserProfileSection>> {
+    return this._userProfileSections.pipe(map((sections) => sections.filter((section) => this.evaluateRule(section.rules.visible))));
+  }
+
   getCustomMetadataPanels(node: NodeEntry): Observable<Array<ContentActionRef>> {
     return this._customMetadataPanels.pipe(map((panels) => panels.filter((panel) => this.evaluateRule(panel.rules.visible, node))));
   }
@@ -591,5 +597,9 @@ export class AppExtensionService implements RuleContext {
 
   bulkActionExecuted(): void {
     this.bulkActionExecuted$.next();
+  }
+
+  isFeatureSupported(feature: string): boolean {
+    return this.extensions.evaluateRule(feature, this);
   }
 }

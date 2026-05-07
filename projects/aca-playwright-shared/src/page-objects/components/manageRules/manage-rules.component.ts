@@ -26,17 +26,15 @@ import { Locator, Page, expect } from '@playwright/test';
 import { BaseComponent } from '../base.component';
 
 export class ManageRules extends BaseComponent {
-  private static rootElement = '.aca-manage-rules';
+  private static readonly rootElement = '.aca-manage-rules';
 
   public getGroupsList = (optionName: string): Locator => this.getChild('.aca-rule-list-item__header', { hasText: optionName });
-  public ruleToggle = this.getChild('.aca-manage-rules__container .mdc-switch').first();
-  public ruleToggleFalse = this.getChild('aca-rule-list-grouping aca-rule-list-item .mdc-switch--unselected').first();
-  public ruleDetailsTitle = this.getChild('.aca-manage-rules__container__rule-details__header__title__name');
+  public ruleToggle = this.getChild('.aca-manage-rules__container [role="switch"]').first();
+  public ruleToggleFalse = this.getChild('aca-rule-list-grouping aca-rule-list-item [role="switch"][aria-checked="false"]').first();
   public ruleDetailsDeleteButton = this.getChild('#delete-rule-btn');
   public ruleDetailsEditButton = this.getChild('#edit-rule-btn');
-  public ruleDetailsWhenText = this.getChild('[data-automation-id="rule-details-triggers-component"]');
-  public ruleDetailsPerformActionsDiv = this.getChild('adf-card-view-selectitem .adf-property-read-only');
-  public rulesEmptyListTitle = this.getChild('.adf-empty-content__title');
+  public ruleDetailsPerformActionsDiv = this.getChild('adf-card-view-selectitem [data-automation-id="select-box"]');
+  public rulesEmptyList = this.getChild('adf-empty-content');
   public ruleActions = this.getChild('aca-rule-action');
   public ruleConditionsInGroup = this.getChild('aca-rule-composite-condition aca-rule-simple-condition');
   public ruleDescription = this.getChild('.aca-manage-rules__container__rule-details__header__title__description');
@@ -53,7 +51,7 @@ export class ManageRules extends BaseComponent {
   }
 
   async checkIfRuleListEmpty(): Promise<boolean> {
-    return this.rulesEmptyListTitle.isVisible();
+    return this.rulesEmptyList.isVisible();
   }
 
   async checkIfRuleIsOnTheList(ruleName: string): Promise<void> {

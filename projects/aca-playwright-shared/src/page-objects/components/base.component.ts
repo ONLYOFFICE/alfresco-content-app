@@ -24,12 +24,9 @@
 
 import { Locator, Page } from '@playwright/test';
 import { PlaywrightBase } from '../playwright-base';
-import { timeouts } from '../../utils';
 
 export abstract class BaseComponent extends PlaywrightBase {
   private readonly rootElement: string;
-  private overlayElement = this.page.locator('.cdk-overlay-backdrop-showing');
-  private progressBar = this.page.locator('mat-progress-bar');
 
   protected constructor(page: Page, rootElement: string) {
     super(page);
@@ -46,30 +43,5 @@ export abstract class BaseComponent extends PlaywrightBase {
    */
   getChild(cssLocator: string, options?: { hasText?: string | RegExp; has?: Locator }): Locator {
     return this.page.locator(`${this.rootElement} ${cssLocator}`, options);
-  }
-
-  async closeAdditionalOverlayElementIfVisible(): Promise<void> {
-    if (await this.overlayElement.isVisible()) {
-      await this.page.keyboard.press('Escape');
-      await this.overlayElement.waitFor({ state: 'detached', timeout: timeouts.medium });
-    }
-  }
-
-  async spinnerWaitForReload(): Promise<void> {
-    try {
-      await this.page.locator('mat-progress-spinner').waitFor({ state: 'attached', timeout: timeouts.medium });
-      await this.page.locator('mat-progress-spinner').waitFor({ state: 'detached', timeout: timeouts.normal });
-    } catch (e) {
-      this.logger.info('Spinner was not present');
-    }
-  }
-
-  async progressBarWaitForReload(): Promise<void> {
-    try {
-      await this.progressBar.waitFor({ state: 'visible', timeout: timeouts.medium });
-      await this.progressBar.waitFor({ state: 'hidden', timeout: timeouts.normal });
-    } catch (e) {
-      this.logger.info('Progress bar was not present');
-    }
   }
 }

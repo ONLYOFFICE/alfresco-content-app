@@ -22,8 +22,8 @@
  * from Hyland Software. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Inject, ViewEncapsulation } from '@angular/core';
-import { SavedSearch, SavedSearchesService } from '@alfresco/adf-content-services';
+import { Component, ViewEncapsulation, inject } from '@angular/core';
+import { AutoFocusDirective, SavedSearch } from '@alfresco/adf-content-services';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { take } from 'rxjs/operators';
 import { NotificationService } from '@alfresco/adf-core';
@@ -31,9 +31,10 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { TitleCasePipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { SavedSearchesContextService } from '../../../../../services/saved-searches-context.service';
 
 @Component({
-  imports: [TranslatePipe, TitleCasePipe, MatIconModule, MatButtonModule, MatDialogModule],
+  imports: [TranslatePipe, TitleCasePipe, MatIconModule, MatButtonModule, MatDialogModule, AutoFocusDirective],
   selector: 'aca-saved-search-delete-dialog',
   templateUrl: './saved-search-delete-dialog.component.html',
   styleUrls: ['./saved-search-delete-dialog.component.scss'],
@@ -41,14 +42,12 @@ import { MatButtonModule } from '@angular/material/button';
   host: { class: 'aca-saved-search-delete-dialog' }
 })
 export class SavedSearchDeleteDialogComponent {
-  isLoading = false;
+  private readonly dialog = inject<MatDialogRef<SavedSearchDeleteDialogComponent>>(MatDialogRef);
+  private readonly notificationService = inject(NotificationService);
+  private readonly savedSearchesService = inject(SavedSearchesContextService);
+  private readonly data = inject<SavedSearch>(MAT_DIALOG_DATA);
 
-  constructor(
-    private readonly dialog: MatDialogRef<SavedSearchDeleteDialogComponent>,
-    private readonly notificationService: NotificationService,
-    private readonly savedSearchesService: SavedSearchesService,
-    @Inject(MAT_DIALOG_DATA) private readonly data: SavedSearch
-  ) {}
+  isLoading = false;
 
   onSubmit() {
     if (this.isLoading) {

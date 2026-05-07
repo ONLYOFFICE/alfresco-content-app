@@ -38,20 +38,17 @@ import {
 import { NodeTemplateService, TemplateDialogConfig } from '../../services/node-template.service';
 import { NotificationService } from '@alfresco/adf-core';
 import { from, Observable, of } from 'rxjs';
-import { Node, NodeBodyUpdate, NodeEntry, NodesApi } from '@alfresco/js-api';
+import { Node, NodeBodyUpdate, NodeEntry, NodesApi, LazyApi } from '@alfresco/js-api';
 import { MatDialog } from '@angular/material/dialog';
 import { AlfrescoApiService, DocumentListService } from '@alfresco/adf-content-services';
 
 @Injectable()
 export class TemplateEffects {
-  private notificationService = inject(NotificationService);
-  private documentListService = inject(DocumentListService);
+  private readonly notificationService = inject(NotificationService);
+  private readonly documentListService = inject(DocumentListService);
 
-  private _nodesApi: NodesApi;
-  get nodesApi(): NodesApi {
-    this._nodesApi = this._nodesApi ?? new NodesApi(this.apiService.getInstance());
-    return this._nodesApi;
-  }
+  @LazyApi((self: TemplateEffects) => new NodesApi(self.apiService.getInstance()))
+  declare nodesApi: NodesApi;
 
   matDialog = inject(MatDialog);
   store = inject(Store<AppStore>);
@@ -112,7 +109,12 @@ export class TemplateEffects {
     () =>
       this.actions$.pipe(
         ofType<CreateFromTemplateSuccess>(TemplateActionTypes.CreateFromTemplateSuccess),
-        map(() => {
+        map((action) => {
+          const node = action.node;
+          const messageKey = node.isFolder
+            ? 'APP.MESSAGES.INFO.NODE_CREATE.FOLDER_FROM_TEMPLATE_SUCCESS'
+            : 'APP.MESSAGES.INFO.NODE_CREATE.FILE_FROM_TEMPLATE_SUCCESS';
+          this.notificationService.showInfo(messageKey, null, { name: node.name });
           this.matDialog.closeAll();
           this.documentListService.reload();
         })

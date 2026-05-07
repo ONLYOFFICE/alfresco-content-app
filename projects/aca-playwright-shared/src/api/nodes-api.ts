@@ -25,9 +25,10 @@
 import { ApiClientFactory } from './api-client-factory';
 import { NodeChildAssociationPaging, NodeEntry, NodePaging, NodesIncludeQuery, NodeBodyUpdate } from '@alfresco/js-api';
 import { NodeContentTree, flattenNodeContentTree } from './node-content-tree';
+import { Utils } from '../utils';
 
 export class NodesApi {
-  private apiService: ApiClientFactory;
+  private readonly apiService: ApiClientFactory;
 
   constructor() {
     this.apiService = new ApiClientFactory();
@@ -45,13 +46,12 @@ export class NodesApi {
     title: string = '',
     description: string = '',
     author: string = '',
-    aspectNames: string[] = null
-  ): Promise<NodeEntry | null> {
+    aspectNames: string[] = []
+  ): Promise<NodeEntry> {
     try {
-      return await this.createNode('cm:folder', name, parentId, title, description, null, author, null, aspectNames);
+      return await this.createNode('cm:folder', name, parentId, title, description, null, author, true, aspectNames);
     } catch (error) {
-      console.error(`${this.constructor.name} ${this.createFolder.name}`, error);
-      return null;
+      throw new Error(`${this.constructor.name} ${this.createFolder.name}: ${error}`);
     }
   }
 
@@ -62,13 +62,12 @@ export class NodesApi {
     description: string = '',
     author: string = '',
     majorVersion: boolean = true,
-    aspectNames: string[] = null
+    aspectNames: string[] = []
   ): Promise<NodeEntry> {
     try {
       return await this.createNode('cm:content', name, parentId, title, description, null, author, majorVersion, aspectNames);
     } catch (error) {
-      console.error(`${this.constructor.name} ${this.createFile.name}`, error);
-      return null;
+      throw new Error(`${this.constructor.name} ${this.createFile.name}: ${error}`);
     }
   }
 
@@ -76,17 +75,26 @@ export class NodesApi {
     try {
       return await this.createContent({ files: names }, relativePath);
     } catch (error) {
-      console.error(`${this.constructor.name} ${this.createFiles.name}: ${error}`);
-      return null;
+      throw new Error(`${this.constructor.name} ${this.createFiles.name}: ${error}`);
     }
+  }
+
+  async createMultipleFiles(count: number, parentId = '-my-'): Promise<NodeEntry[]> {
+    const createdFiles: NodeEntry[] = [];
+    for (let i = 0; i < count; i++) {
+      const file = await this.createFile(`file-${Utils.random()}-${i}`, parentId);
+      if (file) {
+        createdFiles.push(file);
+      }
+    }
+    return createdFiles;
   }
 
   async createFolders(names: string[], relativePath = '/'): Promise<NodePaging> {
     try {
       return await this.createContent({ folders: names }, relativePath);
     } catch (error) {
-      console.error(`${this.constructor.name} ${this.createFolders.name}: ${error}`);
-      return null;
+      throw new Error(`${this.constructor.name} ${this.createFolders.name}: ${error}`);
     }
   }
 
@@ -107,11 +115,8 @@ export class NodesApi {
     imageProps: any = null,
     author: string = '',
     majorVersion: boolean = true,
-    aspectNames: string[] = null
-  ): Promise<NodeEntry | null> {
-    if (!aspectNames) {
-      aspectNames = ['cm:versionable']; // workaround for REPO-4772
-    }
+    aspectNames: string[] = []
+  ): Promise<NodeEntry> {
     const nodeBody = {
       name,
       nodeType,
@@ -132,8 +137,7 @@ export class NodesApi {
         majorVersion
       });
     } catch (error) {
-      console.error(`${this.constructor.name} ${this.createNode.name}`, error);
-      return null;
+      throw new Error(`${this.constructor.name} ${this.createNode.name}: ${error}`);
     }
   }
 
@@ -174,7 +178,7 @@ export class NodesApi {
    */
   async deleteCurrentUserNodes(): Promise<void> {
     try {
-      const userNodes = (await this.getNodeChildren('-my-')).list.entries;
+      const userNodes = (await this.getNodeChildren('-my-'))?.list?.entries ?? [];
       const userNodesIds = userNodes.map((nodeChild) => nodeChild.entry.id);
       await this.deleteNodes(userNodesIds);
     } catch (error) {
@@ -206,24 +210,22 @@ export class NodesApi {
     try {
       return this.apiService.nodes.createNode('-my-', flattenNodeContentTree(content, relativePath) as any);
     } catch (error) {
-      console.error(`${this.constructor.name} ${this.createContent.name}`, error);
-      return null;
+      throw new Error(`${this.constructor.name} ${this.createContent.name}: ${error}`);
     }
   }
 
-  async getNodeById(id: string): Promise<NodeEntry | null> {
+  async getNodeById(id: string): Promise<NodeEntry> {
     try {
       return this.apiService.nodes.getNode(id);
     } catch (error) {
-      console.error(`${this.constructor.name} ${this.getNodeById.name}`, error);
-      return null;
+      throw new Error(`${this.constructor.name} ${this.getNodeById.name}: ${error}`);
     }
   }
 
   async getNodeIdFromParent(name: string, parentId: string): Promise<string> {
     try {
-      const children = (await this.getNodeChildren(parentId)).list.entries;
-      return children.find((elem) => elem.entry.name === name).entry.id || '';
+      const children = (await this.getNodeChildren(parentId))?.list?.entries ?? [];
+      return children.find((elem) => elem.entry.name === name)?.entry.id ?? '';
     } catch (error) {
       console.error(`${this.constructor.name} ${this.getNodeIdFromParent.name}`, error);
       return '';
@@ -320,7 +322,7 @@ export class NodesApi {
     }
   }
 
-  async removeUserAccessOnNodeTemplate(nodeName: string): Promise<NodeEntry> {
+  async removeUserAccessOnNodeTemplate(nodeName: string): Promise<NodeEntry | null> {
     try {
       const templatesRootFolderId = await this.getNodeTemplatesFolderId();
       const nodeId: string = await this.getNodeIdFromParent(nodeName, templatesRootFolderId);
@@ -332,7 +334,7 @@ export class NodesApi {
     }
   }
 
-  async removeUserAccessOnSpaceTemplate(nodeName: string): Promise<NodeEntry> {
+  async removeUserAccessOnSpaceTemplate(nodeName: string): Promise<NodeEntry | null> {
     try {
       const templatesRootFolderId = await this.getSpaceTemplatesFolderId();
       const nodeId: string = await this.getNodeIdFromParent(nodeName, templatesRootFolderId);
@@ -359,7 +361,7 @@ export class NodesApi {
     }
   }
 
-  private async addAspects(nodeId: string, aspectNames: string[]): Promise<NodeEntry> {
+  private async addAspects(nodeId: string, aspectNames: string[]): Promise<NodeEntry | null> {
     try {
       return this.apiService.nodes.updateNode(nodeId, { aspectNames });
     } catch (error) {
@@ -411,7 +413,7 @@ export class NodesApi {
     }
   }
 
-  async createLinkToFileName(originalFileName: string, originalFileParentId: string, destinationParentId?: string): Promise<NodeEntry> {
+  async createLinkToFileName(originalFileName: string, originalFileParentId: string, destinationParentId?: string): Promise<NodeEntry | null> {
     destinationParentId ??= originalFileParentId;
 
     try {
@@ -419,30 +421,27 @@ export class NodesApi {
 
       return this.createFileLink(nodeId, destinationParentId);
     } catch (error) {
-      console.error('Admin Actions - createLinkToFileName failed : ', error);
-      return null;
+      throw new Error(`Admin Actions - createLinkToFileName failed : ${error}`);
     }
   }
 
-  async createLinkToFolderName(originalFolderName: string, originalFolderParentId: string, destinationParentId?: string): Promise<NodeEntry> {
+  async createLinkToFolderName(originalFolderName: string, originalFolderParentId: string, destinationParentId?: string): Promise<NodeEntry | null> {
     destinationParentId ??= originalFolderParentId;
 
     try {
       const nodeId = await this.getNodeIdFromParent(originalFolderName, originalFolderParentId);
       return this.createFolderLink(nodeId, destinationParentId);
     } catch (error) {
-      console.error('Admin Actions - createLinkToFolderName failed : ', error);
-      return null;
+      throw new Error(`Admin Actions - createLinkToFolderName failed : ${error}`);
     }
   }
 
   async getNodeProperty(nodeId: string, property: string): Promise<string> {
     try {
       const node = await this.getNodeById(nodeId);
-      return node.entry.properties?.[property] || '';
+      return node.entry.properties?.[property] ?? '';
     } catch (error) {
-      console.error(`${this.constructor.name} ${this.getNodeProperty.name}`, error);
-      return '';
+      throw new Error(`${this.constructor.name} ${this.getNodeProperty.name}: ${error}`);
     }
   }
 
@@ -451,8 +450,7 @@ export class NodesApi {
       const sharedId = await this.getNodeProperty(nodeId, 'qshare:sharedId');
       return sharedId !== '';
     } catch (error) {
-      console.error(`${this.constructor.name} ${this.isFileShared.name}`, error);
-      return null;
+      throw new Error(`${this.constructor.name} ${this.isFileShared.name}: ${error}`);
     }
   }
 
@@ -461,8 +459,7 @@ export class NodesApi {
       const lockType = await this.getNodeProperty(nodeId, 'cm:lockType');
       return lockType || '';
     } catch (error) {
-      console.error(`${this.constructor.name} ${this.getLockType.name}`, error);
-      return '';
+      throw new Error(`${this.constructor.name} ${this.getLockType.name}: ${error}`);
     }
   }
 
@@ -470,8 +467,7 @@ export class NodesApi {
     try {
       return (await this.getLockType(nodeId)) === 'WRITE_LOCK';
     } catch (error) {
-      console.error(`${this.constructor.name} ${this.isFileLockedWrite.name}`, error);
-      return null;
+      throw new Error(`${this.constructor.name} ${this.isFileLockedWrite.name}: ${error}`);
     }
   }
 }

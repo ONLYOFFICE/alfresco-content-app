@@ -34,7 +34,8 @@
                 "TITLE": "Paket",
                 "NAME": "Namn",
                 "VERSION": "Version"
-            }
+            },
+            "BACK_BUTTON_LABEL": "Gå tillbaka"
         },
         "LANGUAGE": "Språk",
         "SIGN_IN": "Logga in",
@@ -51,19 +52,14 @@
             "LOCATION": "Plats",
             "TELEPHONE": "Telefon",
             "MOBILE": "Mobil",
-            "LOGIN": "Inloggning",
-            "USERNAME": "Användarnamn",
             "EMAIL": "E-post",
-            "PASSWORD": "Lösenord",
-            "OLD_PASSWORD": "Gammalt lösenord",
-            "FORGOT_PASSWORD": "Glömt ditt lösenord?",
-            "NEW_PASSWORD": "Nytt lösenord",
-            "VERIFY_PASSWORD": "Verifiera lösenord",
             "COMPANY_DETAILS": "Företagsuppgifter",
             "NAME": "Namn",
             "ADDRESS": "Adress",
             "POSTCODE": "Postnummer",
-            "INVALID_INPUT": "Ogiltig inmatning"
+            "INVALID_PHONE_FORMAT": "Ange ett giltigt telefonnummer",
+            "INVALID_EMAIL_FORMAT": "Ange en giltig e‑postadress",
+            "GO_TO_PERSONAL_FILES_BUTTON_LABEL": "Gå till personliga filer"
         },
         "LOCKED_BY": "Låst av: ",
         "PREVIEW": {
@@ -118,6 +114,13 @@
                     "TITLE": "Behörigheter"
                 }
             },
+            "REPOSITORY_VIEW": {
+                "TITLE": "Repository",
+                "SIDENAV_LINK": {
+                    "LABEL": "Repository",
+                    "TOOLTIP": "View the repository"
+                }
+            },
             "LIBRARIES": {
                 "TITLE": "Filbibliotek",
                 "DESCRIPTION": "Gå till filbibliotek",
@@ -133,6 +136,10 @@
                     "FAVORITE_LIBRARIES": {
                         "TITLE": "Inga favoritbibliotek",
                         "TEXT": "Favoritmarkera ett bibliotek som du enkelt vill hitta senare."
+                    },
+                    "ALL_LIBRARIES": {
+                        "TITLE": "Inget bibliotek hittades",
+                        "TEXT": "Skapa ett nytt bibliotek för att komma igång."
                     }
                 },
                 "MENU": {
@@ -148,6 +155,13 @@
                         "SIDENAV_LINK": {
                             "LABEL": "Favoritbibliotek",
                             "TOOLTIP": "Kom åt mina favoritbibliotek"
+                        }
+                    },
+                    "ALL_LIBRARIES": {
+                        "TITLE": "Alla bibliotek",
+                        "SIDENAV_LINK": {
+                            "LABEL": "Alla bibliotek",
+                            "TOOLTIP": "Få tillgång till alla bibliotek"
                         }
                     }
                 },
@@ -260,7 +274,8 @@
                     "LOCATION": "Plats",
                     "SIZE": "Storlek"
                 },
-                "UNKNOWN_LOCATION": "Okänd",
+                "UNKNOWN_LOCATION": "Du har inte behörighet att se mappen med detta dokument.",
+                "VIEW_ADDITIONAL_LOCATIONS": "Visa ytterligare referensplatser",
                 "NO_RESULTS": "Din sökning gav inga resultat",
                 "EMPTY_SEARCH": "Sökord krävs",
                 "NO_FILTER_RESULTS": "Ditt filter gav inga resultat",
@@ -305,7 +320,7 @@
             "EDIT_OFFLINE_CANCEL": "Avbryt redigering",
             "CHANGE_ASPECT": "Redigera aspekter",
             "ADD_ASPECTS": "Lägg till aspekter",
-            "FOLDER_INFO": "Mapp Information"
+            "NODE_INFO": "Information"
         },
         "DIALOGS": {
             "CONFIRM_PURGE": {
@@ -420,6 +435,10 @@
                         "FAIL": "{{ failed }} kunde inte flyttas."
                     }
                 },
+                "NODE_CREATE": {
+                    "FILE_FROM_TEMPLATE_SUCCESS": "Filen {{ name }} har skapats från mallen",
+                    "FOLDER_FROM_TEMPLATE_SUCCESS": "Mappen {{ name }} har skapats från mallen"
+                },
                 "LIBRARY_DELETED": "Bibliotek raderat",
                 "LEFT_LIBRARY": "Du har lämnat biblioteket",
                 "FAVORITE_NODE_ADDED": "Har lagt till {{ name }} till favoriter",
@@ -459,23 +478,34 @@
         },
         "TOOLTIPS": {
             "COLLAPSE_NAVIGATION": "Dölj navigeringsmenyn",
+            "COLLAPSE_NAVIGATION_ALT": "Ikon för att fälla ihop navigationsmenyn",
             "OPTIONS_SETTINGS": "Alternativ och inställningar",
             "MY_PROFILE": "Min profil",
-            "EXPAND_NAVIGATION": "Expandera navigeringsmenyn"
+            "EXPAND_NAVIGATION": "Expandera navigeringsmenyn",
+            "EXPAND_SECTION": "Expandera avsnitt",
+            "COLLAPSE_SECTION": "Minimera avsnitt",
+            "EDIT": "Redigera",
+            "CANCEL": "Avbryt",
+            "SAVE": "Spara"
         },
-        "FOLDER_INFO": {
-            "ICON": "Mapp-ikon",
-            "TITLE": "Mapp Information",
+        "NODE_INFO": {
+            "ICON": "Nodikon",
+            "TITLE": "Information",
             "SIZE": "Storlek",
             "NUMBER_OF_FILES": "Antal filer",
             "CALCULATING": "Beräknar...",
-            "CALCULATED_SIZE_LARGE": "{{sizeInBytes}} bytes ({{sizeInLargeUnit}} {{unit}} på disk) för {{count}} filer",
-            "CALCULATED_SIZE_NORMAL": "{{sizeInBytes}} bytes för {{count}} filer",
             "LOCATION": "Plats",
+            "REFERENCED": "Refererad",
             "CREATED": "Skapad",
             "MODIFIED": "Ändrad",
             "DONE": "Klar",
             "ERROR": "Något gick fel, stäng denna dialogruta och försök igen"
+        },
+        "ADDITIONAL_REFERENCES_DIALOG": {
+            "TITLE": "Ytterligare referensplats",
+            "NO_LOCATIONS": "{{ name }} refereras inte på någon plats.",
+            "DESCRIPTION": "{{ name }} refereras för närvarande på dessa platser.",
+            "CLOSE": "Stäng"
         }
     },
     "NODE_SELECTOR": {
@@ -565,7 +595,8 @@
     },
     "SEARCH": {
         "BULK_ACTIONS_DROPDOWN": {
-            "TITLE": "Gruppåtgärder ({{ count }} objekt)",
+            "LABEL": "Massåtgärder",
+            "TITLE": "Välj en åtgärd för alla {{ count }} resultat",
             "BULK_NOT_AVAILABLE": "Gruppåtgärder (inte tillgängligt)",
             "BULK_NOT_AVAILABLE_TOOLTIP": "Gruppåtgärder kan inte användas utan sökresultat"
         },
@@ -576,7 +607,12 @@
             "LIBRARIES": "Bibliotek",
             "MIN_LENGTH": "Sökindata måste ha minst 2 alfanumeriska tecken.",
             "REQUIRED": "Sökindata måste fyllas i.",
-            "WHITESPACE": "Sökinmatningen kan inte bara vara blankt."
+            "WHITESPACE": "Sökinmatningen kan inte bara vara blankt.",
+            "OPERATORS": "Sökfältet får inte börja eller sluta med, eller enbart bestå av operatorer",
+            "IN_PREFIX": "I",
+            "FILES_AND_FOLDERS": "Filer och mappar",
+            "RESET": "Återställ",
+            "SEARCH_IN": "Sök i"
         },
         "SORT": {
             "SORTING_OPTION": "Sortera efter",
@@ -685,7 +721,8 @@
                 "REFERENCED_DOCUMENTS_HEADER": "Referensdokument",
                 "REGENERATION_BUTTON_LABEL": "Generera på nytt",
                 "COPY_BUTTON_LABEL": "Kopiera",
-                "COPY_MESSAGE": "Svar kopierat till urklipp"
+                "COPY_MESSAGE": "Svar kopierat till urklipp",
+                "RELOAD_REFERENCES_BUTTON_LABEL": "Ladda om"
             },
             "AGENTS_BUTTON": {
                 "LABEL": "Fråga Discovery",
@@ -701,7 +738,8 @@
                 "AGENTS_FETCHING": "Det gick inte att hämta agenter.",
                 "HX_INSIGHT_URL_FETCHING": "Det gick inte att hämta HX Insight-URL.",
                 "LOADING_ERROR": "Hmm... något verkar ha gått fel.",
-                "PAGE_NOT_AVAILABLE_ERROR": "Sidan är inte tillgänglig för dessa villkor."
+                "PAGE_NOT_AVAILABLE_ERROR": "Sidan är inte tillgänglig för dessa villkor.",
+                "REFERENCES_LOADING_ERROR": "Något gick fel när referenserna laddades."
             },
             "DISCARD_CHANGES": {
                 "WARNING": "Varning!",

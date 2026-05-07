@@ -22,8 +22,8 @@
  * from Hyland Software. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Inject, ViewEncapsulation } from '@angular/core';
-import { AutoFocusDirective, forbidOnlySpaces, SavedSearch, SavedSearchesService } from '@alfresco/adf-content-services';
+import { Component, ViewEncapsulation, inject } from '@angular/core';
+import { AutoFocusDirective, forbidOnlySpaces, SavedSearch } from '@alfresco/adf-content-services';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { take } from 'rxjs/operators';
 import { NotificationService } from '@alfresco/adf-core';
@@ -36,6 +36,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TitleCasePipe } from '@angular/common';
+import { SavedSearchesContextService } from '../../../../../services/saved-searches-context.service';
 
 @Component({
   imports: [
@@ -56,16 +57,16 @@ import { TitleCasePipe } from '@angular/common';
   host: { class: 'aca-saved-search-edit-dialog' }
 })
 export class SavedSearchEditDialogComponent {
+  private readonly dialog = inject<MatDialogRef<SavedSearchEditDialogComponent>>(MatDialogRef);
+  private readonly notificationService = inject(NotificationService);
+  private readonly savedSearchesService = inject(SavedSearchesContextService);
+  private readonly uniqueSearchNameValidator = inject(UniqueSearchNameValidator);
+  private readonly data = inject<SavedSearch>(MAT_DIALOG_DATA);
+
   form: FormGroup<SavedSearchForm>;
   isLoading = false;
 
-  constructor(
-    private readonly dialog: MatDialogRef<SavedSearchEditDialogComponent>,
-    private readonly notificationService: NotificationService,
-    private readonly savedSearchesService: SavedSearchesService,
-    private readonly uniqueSearchNameValidator: UniqueSearchNameValidator,
-    @Inject(MAT_DIALOG_DATA) private readonly data: SavedSearch
-  ) {
+  constructor() {
     this.form = new FormGroup({
       name: new FormControl('', {
         validators: [Validators.required, forbidOnlySpaces],

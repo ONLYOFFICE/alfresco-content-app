@@ -23,15 +23,15 @@
  */
 
 import { AppStore, DownloadNodesAction, EditOfflineAction, SetSelectedNodesAction, getAppSelection } from '@alfresco/aca-shared/store';
-import { NodeEntry, SharedLinkEntry, Node, NodesApi } from '@alfresco/js-api';
-import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { NodeEntry, SharedLinkEntry, Node, NodesApi, LazyApi } from '@alfresco/js-api';
+import { Component, inject, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AppExtensionService, isLocked } from '@alfresco/aca-shared';
 import { NotificationService } from '@alfresco/adf-core';
 import { AlfrescoApiService } from '@alfresco/adf-content-services';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
-import { MatMenuModule } from '@angular/material/menu';
+import { MatMenuItem, MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
@@ -47,20 +47,21 @@ import { MatIconModule } from '@angular/material/icon';
   host: { class: 'app-toggle-edit-offline' }
 })
 export class ToggleEditOfflineComponent implements OnInit {
-  private notificationService = inject(NotificationService);
+  private readonly store = inject<Store<AppStore>>(Store);
+  private readonly alfrescoApiService = inject(AlfrescoApiService);
+  private readonly extensions = inject(AppExtensionService);
 
-  private nodesApi: NodesApi;
+  @ViewChild(MatMenuItem)
+  menuItem: MatMenuItem;
+
+  private readonly notificationService = inject(NotificationService);
+
+  @LazyApi((self: ToggleEditOfflineComponent) => new NodesApi(self.alfrescoApiService.getInstance()))
+  declare private readonly nodesApi: NodesApi;
+
   selection: NodeEntry;
   nodeTitle = '';
   isNodeLocked = false;
-
-  constructor(
-    private store: Store<AppStore>,
-    private alfrescoApiService: AlfrescoApiService,
-    private extensions: AppExtensionService
-  ) {
-    this.nodesApi = new NodesApi(this.alfrescoApiService.getInstance());
-  }
 
   ngOnInit() {
     this.store.select(getAppSelection).subscribe(({ file }) => {

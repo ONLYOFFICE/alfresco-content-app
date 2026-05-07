@@ -19,7 +19,13 @@
         "DESCRIPTION": "Description",
         "WHEN": "When",
         "PERFORM_ACTIONS": "Perform actions",
-        "OPTIONS": "Other options"
+        "OPTIONS": "Other options",
+        "FIELD": "Field",
+        "COMPARATOR": "Comparator",
+        "VALUE": "Value",
+        "LOGIC_OPERATOR": "Logic Operator",
+        "GROUP_CONDITIONS": "Group Conditions",
+        "CONDITIONS": "Conditions"
       },
       "PLACEHOLDER": {
         "NAME": "Enter rule name",
@@ -31,7 +37,8 @@
       "ERROR": {
         "REQUIRED": "This field is required",
         "RULE_COMPOSITE_CONDITION_INVALID": "One or more condition groups is empty",
-        "INSUFFICIENT_TRIGGERS_SELECTED": "At least one trigger is required"
+        "INSUFFICIENT_TRIGGERS_SELECTED": "At least one trigger is required",
+        "ACTION_REQUIRED": "Action field is required"
       },
       "TRIGGERS": {
         "INBOUND": "Items are created or enter this folder",
@@ -39,7 +46,7 @@
         "OUTBOUND": "Items are deleted or leave this folder"
       },
       "OPTIONS": {
-        "IS_INHERITABLE":  "Rule applies to subfolders",
+        "IS_INHERITABLE": "Rule applies to subfolders",
         "IS_ASYNCHRONOUS": "Run rule in the background",
         "DISABLE_RULE": "Disable rule",
         "ERROR_SCRIPT": "If errors occur run script",
@@ -124,9 +131,10 @@
       "LOAD_MORE_RULE_SETS": "Load rules from other folders",
       "LOAD_MORE_RULES": "Load more rules",
       "LOADING_RULES": "Loading rules",
-      "TOGGLE_RULE_STATE": "Toggle rule enabled state",
+      "TOGGLE_RULE_STATE": "Toggle {{ name }} rule",
       "INHERITED_RULES_WILL_BE_RUN_FIRST": "Inherited rules will be run first",
-      "ALL_LINKED_RULES_ARE_DISABLED": "All rules linked from this rule set are disabled"
+      "ALL_LINKED_RULES_ARE_DISABLED": "All rules linked from this rule set are disabled",
+      "EDIT_LINK_LABEL": "Link rules from another folder"
     },
     "LINK_RULES_DIALOG": {
       "TITLE": "Select a folder to link rules from",

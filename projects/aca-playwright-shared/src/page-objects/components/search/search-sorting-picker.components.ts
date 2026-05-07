@@ -29,12 +29,12 @@ export type SortByType = 'Relevance' | 'Title' | 'Filename' | 'Modified date' | 
 export type SortByDirection = 'asc' | 'desc';
 
 export class SearchSortingPicker extends BaseComponent {
-  private static rootElement = '#aca-button-action-menu';
+  private static readonly rootElement = '#aca-button-action-menu';
 
   public actionMenu = this.page.locator('[data-automation-id="auto_header_content_id_$thumbnail"]');
   public sortOrderButton = this.page.locator('#aca-button-sorting-menu');
-  public sortByDropdownExpanded = this.page.locator('.mat-mdc-menu-panel').first();
-  public sortByList = this.page.locator('.mat-mdc-menu-panel button');
+  public sortByDropdownExpanded = this.page.locator('[role="menu"]').first();
+  public sortByList = this.page.locator('[role="menu"] button');
 
   constructor(page: Page, rootElement = SearchSortingPicker.rootElement) {
     super(page, rootElement);
@@ -80,6 +80,6 @@ export class SearchSortingPicker extends BaseComponent {
     await elem.click();
     const directionSortElement = this.page.locator(`[id="${optionId}-${direction.toLocaleLowerCase()}"]`);
     await directionSortElement.click();
-    await this.progressBarWaitForReload();
+    await this.spinnerWaitForReload();
   }
 }

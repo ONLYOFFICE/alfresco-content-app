@@ -32,7 +32,7 @@ import { NodeInfo } from '@alfresco/aca-shared/store';
 import { delay } from 'rxjs/operators';
 import { EditRuleDialogUiComponent } from '../rule-details/edit-rule-dialog.ui-component';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent, EmptyContentComponent, NotificationService, ToolbarComponent, ToolbarTitleComponent } from '@alfresco/adf-core';
+import { ConfirmDialogComponent, EmptyContentComponent, NotificationService } from '@alfresco/adf-core';
 import { ActionDefinitionTransformed } from '../model/rule-action.model';
 import { ActionsService } from '../services/actions.service';
 import { FolderRuleSetsService } from '../services/folder-rule-sets.service';
@@ -49,6 +49,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { RuleListUiComponent } from '../rule-list/rule-list/rule-list.ui-component';
 import { RuleDetailsUiComponent } from '../rule-details/rule-details.ui-component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatToolbar } from '@angular/material/toolbar';
 
 @Component({
   imports: [
@@ -65,8 +66,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     GenericErrorComponent,
     RuleDetailsUiComponent,
     EmptyContentComponent,
-    ToolbarTitleComponent,
-    ToolbarComponent
+    MatToolbar
   ],
   selector: 'aca-manage-rules',
   templateUrl: 'manage-rules.smart-component.html',
@@ -76,6 +76,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   host: { class: 'aca-manage-rules' }
 })
 export class ManageRulesSmartComponent implements OnInit {
+  private readonly location = inject(Location);
+  private readonly folderRulesService = inject(FolderRulesService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly matDialogService = inject(MatDialog);
+  private readonly notificationService = inject(NotificationService);
+  private readonly actionsService = inject(ActionsService);
+  private readonly folderRuleSetsService = inject(FolderRuleSetsService);
+
   nodeId = '';
   isInheritanceEnabled = true;
   isInheritanceToggleDisabled = false;
@@ -97,16 +105,6 @@ export class ManageRulesSmartComponent implements OnInit {
   isInheritedRuleSetsNotEmpty = false;
 
   private readonly destroyRef = inject(DestroyRef);
-
-  constructor(
-    private location: Location,
-    private folderRulesService: FolderRulesService,
-    private route: ActivatedRoute,
-    private matDialogService: MatDialog,
-    private notificationService: NotificationService,
-    private actionsService: ActionsService,
-    private folderRuleSetsService: FolderRuleSetsService
-  ) {}
 
   ngOnInit() {
     this.mainRuleSet$ = this.folderRuleSetsService.mainRuleSet$;

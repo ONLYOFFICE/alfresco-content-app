@@ -23,8 +23,8 @@
  */
 
 import { AlfrescoApiService } from '@alfresco/adf-content-services';
-import { Injectable } from '@angular/core';
-import { QueriesApi, SitePaging } from '@alfresco/js-api';
+import { Injectable, inject } from '@angular/core';
+import { QueriesApi, SitePaging, LazyApi } from '@alfresco/js-api';
 import { Subject } from 'rxjs';
 
 export interface LibrarySearchQuery {
@@ -39,13 +39,12 @@ export interface LibrarySearchQuery {
   providedIn: 'root'
 })
 export class SearchLibrariesQueryBuilderService {
-  _queriesApi: QueriesApi;
-  get queriesApi(): QueriesApi {
-    this._queriesApi = this._queriesApi ?? new QueriesApi(this.alfrescoApiService.getInstance());
-    return this._queriesApi;
-  }
+  private readonly alfrescoApiService = inject(AlfrescoApiService);
 
   private _userQuery = '';
+
+  @LazyApi((self: SearchLibrariesQueryBuilderService) => new QueriesApi(self.alfrescoApiService.getInstance()))
+  declare queriesApi: QueriesApi;
 
   updated: Subject<any> = new Subject();
   executed: Subject<any> = new Subject();
@@ -60,8 +59,6 @@ export class SearchLibrariesQueryBuilderService {
   set userQuery(value: string) {
     this._userQuery = value ? value.trim() : '';
   }
-
-  constructor(private alfrescoApiService: AlfrescoApiService) {}
 
   update(): void {
     const query = this.buildQuery();

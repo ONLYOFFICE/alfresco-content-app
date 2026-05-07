@@ -37,7 +37,6 @@ import {
   SetSelectedNodesAction,
   ShareNodeAction,
   UnlockWriteAction,
-  ViewNodeExtras,
   ViewNodeVersionAction
 } from '@alfresco/aca-shared/store';
 import { NodeEffects } from '../store/effects/node.effects';
@@ -53,6 +52,7 @@ import { Node, NodeEntry, SiteBodyCreate, SiteEntry, UserInfo, VersionPaging } f
 import {
   DocumentListService,
   FileModel,
+  LibraryDialogComponent,
   NewVersionUploaderDataAction,
   NewVersionUploaderDialogData,
   NewVersionUploaderService,
@@ -60,8 +60,10 @@ import {
   NodesApiService,
   ViewVersion
 } from '@alfresco/adf-content-services';
-import { FolderInformationComponent } from '../dialogs/folder-details/folder-information.component';
+import { NodeInformationComponent } from '../dialogs/node-details/node-information.component';
 import { provideEffects } from '@ngrx/effects';
+import { ActivatedRoute, Router } from '@angular/router';
+import { EventEmitter } from '@angular/core';
 
 describe('ContentManagementService', () => {
   let dialog: MatDialog;
@@ -77,6 +79,8 @@ describe('ContentManagementService', () => {
   let appHookService: AppHookService;
   let newVersionUploaderService: NewVersionUploaderService;
   let appSettingsService: AppSettingsService;
+  let router: Router;
+  let activatedRoute: ActivatedRoute;
   let showErrorSpy: jasmine.Spy<(message: string, action?: string, interpolateArgs?: any, showAction?: boolean) => MatSnackBarRef<any>>;
   let showInfoSpy: jasmine.Spy<(message: string, action?: string, interpolateArgs?: any, showAction?: boolean) => MatSnackBarRef<any>>;
   let showWarningSpy: jasmine.Spy<(message: string, action?: string, interpolateArgs?: any, showAction?: boolean) => MatSnackBarRef<any>>;
@@ -104,7 +108,8 @@ describe('ContentManagementService', () => {
     appHookService = TestBed.inject(AppHookService);
     newVersionUploaderService = TestBed.inject(NewVersionUploaderService);
     appSettingsService = TestBed.inject(AppSettingsService);
-
+    router = TestBed.inject(Router);
+    activatedRoute = TestBed.inject(ActivatedRoute);
     dialog = TestBed.inject(MatDialog);
   });
 
@@ -897,6 +902,20 @@ describe('ContentManagementService', () => {
       store.dispatch(new DeleteNodesAction(selection));
       expect(openSnackMessageActionSpy.calls.argsFor(0)[2].panelClass).toBe('adf-warning-snackbar');
     });
+
+    it('should focus element when deleting nodes with focusAfterClosed selector', fakeAsync(() => {
+      const mockElement = jasmine.createSpyObj<HTMLElement>('HTMLElement', ['focus']);
+      spyOn(document, 'querySelector').and.returnValue(mockElement);
+      spyOn(contentApi, 'deleteNode').and.returnValue(of(null));
+
+      const nodes = [{ entry: { id: '1', name: 'name1' } } as NodeEntry];
+
+      contentManagementService.deleteNodes(nodes, false, '.some-button');
+      tick();
+
+      expect(document.querySelector).toHaveBeenCalledWith('.some-button');
+      expect(mockElement.focus).toHaveBeenCalled();
+    }));
   });
 
   describe('Permanent Delete', () => {
@@ -921,6 +940,20 @@ describe('ContentManagementService', () => {
 
       expect(contentApi.purgeDeletedNode).toHaveBeenCalled();
     });
+
+    it('should focus element when purging nodes with focusAfterClosed selector', fakeAsync(() => {
+      const mockElement = jasmine.createSpyObj<HTMLElement>('HTMLElement', ['focus']);
+      spyOn(document, 'querySelector').and.returnValue(mockElement);
+      spyOn(contentApi, 'purgeDeletedNode').and.returnValue(of({}));
+
+      const nodes = [{ entry: { id: '1', name: 'name1' } } as NodeEntry];
+
+      contentManagementService.purgeDeletedNodes(nodes, '.some-button');
+      tick();
+
+      expect(document.querySelector).toHaveBeenCalledWith('.some-button');
+      expect(mockElement.focus).toHaveBeenCalled();
+    }));
 
     describe('notification', () => {
       it('raises warning on multiple fail and one success', (done) => {
@@ -1302,6 +1335,28 @@ describe('ContentManagementService', () => {
         store.dispatch(new RestoreDeletedNodesAction(selection));
         expect(openSnackMessageActionSpy.calls.argsFor(0)[2].panelClass).toBe('adf-info-snackbar');
       });
+
+      it('should focus element when restoring nodes with focusAfterClosed selector', fakeAsync(() => {
+        const mockElement = jasmine.createSpyObj<HTMLElement>('HTMLElement', ['focus']);
+        spyOn(document, 'querySelector').and.returnValue(mockElement);
+        spyOn(contentApi, 'restoreNode').and.returnValue(of({} as NodeEntry));
+        const path = {
+          elements: [
+            {
+              id: '1-1',
+              name: 'Company Home'
+            }
+          ]
+        };
+
+        const nodes = [{ entry: { name: 'node1', id: '1', path } } as NodeEntry];
+
+        contentManagementService.restoreDeletedNodes(nodes, '.some-button');
+        tick(100);
+
+        expect(document.querySelector).toHaveBeenCalledWith('.some-button');
+        expect(mockElement.focus).toHaveBeenCalled();
+      }));
     });
   });
 
@@ -1618,12 +1673,47 @@ describe('ContentManagementService', () => {
 
     it('should dispatch ViewNodeVersionAction if dialog emit view action', () => {
       const fakeVersionId = '1';
-      const fakeLocation: ViewNodeExtras = {
-        location: '/'
-      };
+      const mockLocation = '/personal-files';
+      activatedRoute.snapshot.queryParams = { location: mockLocation };
+
       spyOnOpenUploadNewVersionDialog.and.returnValue(of({ action: NewVersionUploaderDataAction.view, versionId: fakeVersionId } as ViewVersion));
       contentManagementService.manageVersions(fakeNodeIsFile);
-      expect(spyOnDispatch).toHaveBeenCalledOnceWith(new ViewNodeVersionAction(fakeNodeIsFile.entry.id, fakeVersionId, fakeLocation));
+
+      expect(spyOnDispatch).toHaveBeenCalledOnceWith(
+        new ViewNodeVersionAction(fakeNodeIsFile.entry.id, fakeVersionId, {
+          location: mockLocation
+        })
+      );
+    });
+
+    it('should dispatch ViewNodeVersionAction with location value from router.url if location param doesnt exist already', () => {
+      const fakeVersionId = '1';
+      const currentUrl = '/current-page';
+      activatedRoute.snapshot.queryParams = {};
+
+      spyOnProperty(router, 'url', 'get').and.returnValue(currentUrl);
+
+      spyOnOpenUploadNewVersionDialog.and.returnValue(of({ action: NewVersionUploaderDataAction.view, versionId: fakeVersionId } as ViewVersion));
+
+      contentManagementService.manageVersions(fakeNodeIsFile);
+
+      expect(spyOnDispatch).toHaveBeenCalledOnceWith(
+        new ViewNodeVersionAction(fakeNodeIsFile.entry.id, fakeVersionId, {
+          location: currentUrl
+        })
+      );
+    });
+
+    it('should dispatch ViewNodeVersionAction with the same location param if already exist', () => {
+      const fakeVersionId = '1';
+      const location = '/personal-files';
+      activatedRoute.snapshot.queryParams = { location: location };
+
+      spyOnOpenUploadNewVersionDialog.and.returnValue(of({ action: NewVersionUploaderDataAction.view, versionId: fakeVersionId } as ViewVersion));
+
+      contentManagementService.manageVersions(fakeNodeIsFile);
+
+      expect(spyOnDispatch).toHaveBeenCalledOnceWith(new ViewNodeVersionAction(fakeNodeIsFile.entry.id, fakeVersionId, { location }));
     });
 
     it('should show permission error is node is not a file and does not have nodeId', () => {
@@ -1829,14 +1919,68 @@ describe('ContentManagementService', () => {
     });
   });
 
-  describe('folderInformationDialog', () => {
-    it('should open folder information dialog', () => {
+  describe('createLibrary', () => {
+    let dialogRefMock: jasmine.SpyObj<MatDialogRef<LibraryDialogComponent, SiteEntry | null>>;
+
+    beforeEach(() => {
+      dialogRefMock = jasmine.createSpyObj<MatDialogRef<LibraryDialogComponent, SiteEntry | null>>('MatDialogRef', ['afterClosed'], {
+        componentInstance: { error: new EventEmitter<string>() } as LibraryDialogComponent
+      });
+    });
+
+    it('should open LibraryDialogComponent with autoFocus set to false', () => {
+      dialogRefMock.afterClosed.and.returnValue(of(null));
+      spyOn(dialog, 'open').and.returnValue(dialogRefMock);
+      contentManagementService.createLibrary();
+
+      expect(dialog.open).toHaveBeenCalledWith(LibraryDialogComponent, jasmine.objectContaining({ autoFocus: false }));
+    });
+
+    it('should show library creation error notifications', () => {
+      dialogRefMock.afterClosed.and.returnValue(of(null));
+      spyOn(dialog, 'open').and.returnValue(dialogRefMock);
+      contentManagementService.createLibrary();
+      dialogRefMock.componentInstance.error.emit('Library creation error');
+
+      expect(showErrorSpy).toHaveBeenCalled();
+    });
+
+    it('should emit guid, call libraryCreated hook and focus when site is created', (done) => {
+      const mockSiteEntry = new SiteEntry({ entry: { guid: 'guid', id: 'id', visibility: 'PUBLIC', title: 'title' } });
+      const button = document.createElement('button');
+      dialogRefMock.afterClosed.and.returnValue(of(mockSiteEntry));
+      spyOn(dialog, 'open').and.returnValue(dialogRefMock);
+      spyOn(appHookService.libraryCreated, 'next');
+      spyOn(document, 'querySelector').and.returnValue(button);
+      spyOn(button, 'focus');
+
+      contentManagementService.createLibrary().subscribe((guid) => {
+        expect(guid).toBe('guid');
+        expect(appHookService.libraryCreated.next).toHaveBeenCalledWith(mockSiteEntry);
+        expect(button.focus).toHaveBeenCalled();
+        done();
+      });
+    });
+
+    it('should emit null when node is missing guid', (done) => {
+      dialogRefMock.afterClosed.and.returnValue(of(null));
+      spyOn(dialog, 'open').and.returnValue(dialogRefMock);
+
+      contentManagementService.createLibrary().subscribe((guid) => {
+        expect(guid).toBeNull();
+        done();
+      });
+    });
+  });
+
+  describe('nodeInformationDialog', () => {
+    it('should open node information dialog', () => {
       spyOn(dialog, 'open');
 
       const fakeNode: NodeEntry = {
         entry: {
-          id: 'folder-node-id',
-          name: 'mock-folder-name',
+          id: 'node-id',
+          name: 'mock-node-name',
           nodeType: 'fake-node-type',
           isFolder: true,
           isFile: false,
@@ -1847,15 +1991,15 @@ describe('ContentManagementService', () => {
         }
       };
 
-      contentManagementService.showFolderInformation(fakeNode);
+      contentManagementService.showNodeInformation(fakeNode);
       expect(dialog.open).toHaveBeenCalledWith(DialogComponent, {
         data: {
-          title: 'APP.FOLDER_INFO.TITLE',
-          confirmButtonTitle: 'APP.FOLDER_INFO.DONE',
+          title: 'APP.NODE_INFO.TITLE',
+          confirmButtonTitle: 'APP.NODE_INFO.DONE',
           isCancelButtonHidden: true,
           isCloseButtonHidden: false,
           dialogSize: DialogSize.Large,
-          contentComponent: FolderInformationComponent,
+          contentComponent: NodeInformationComponent,
           componentData: fakeNode.entry
         },
         width: '700px'
@@ -1902,6 +2046,19 @@ describe('ContentManagementService', () => {
       expect(showInfoSpy).toHaveBeenCalledWith('APP.MESSAGES.INFO.FAVORITE_NODES_ADDED', null, { number: 2 });
     });
 
+    it('should focus element when adding favorite with focusAfterClosed selector', fakeAsync(() => {
+      const mockElement = jasmine.createSpyObj<HTMLElement>('HTMLElement', ['focus']);
+
+      spyOn(document, 'querySelector').and.returnValue(mockElement);
+      spyOn(contentApi, 'addFavorite').and.returnValue(of({ entry: { targetGuid: '', target: '' } }));
+
+      contentManagementService.addFavorite([fakeNode1, fakeNode2], '.some-button');
+      tick(100);
+
+      expect(document.querySelector).toHaveBeenCalledWith('.some-button');
+      expect(mockElement.focus).toHaveBeenCalled();
+    }));
+
     it('should call proper content api and display proper snackbar message if one node is provided for removeFavorite', () => {
       spyOn(contentApi, 'removeFavorite').and.returnValue(of({}));
 
@@ -1930,5 +2087,18 @@ describe('ContentManagementService', () => {
       expect(contentApi.removeFavorite).toHaveBeenCalledWith([fakeNode1, fakeNode2]);
       expect(showErrorSpy).toHaveBeenCalledWith('APP.MESSAGES.ERRORS.FAVORITE_NODE_NOT_FOUND', null, { name: 'mock-folder2-name' });
     });
+
+    it('should focus element when removing favorite with focusAfterClosed selector', fakeAsync(() => {
+      const mockElement = jasmine.createSpyObj<HTMLElement>('HTMLElement', ['focus']);
+
+      spyOn(document, 'querySelector').and.returnValue(mockElement);
+      spyOn(contentApi, 'removeFavorite').and.returnValue(of({}));
+
+      contentManagementService.removeFavorite([fakeNode1, fakeNode2], '.some-button');
+      tick(100);
+
+      expect(document.querySelector).toHaveBeenCalledWith('.some-button');
+      expect(mockElement.focus).toHaveBeenCalled();
+    }));
   });
 });

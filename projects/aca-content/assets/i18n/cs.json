@@ -34,7 +34,8 @@
                 "TITLE": "Balíčky",
                 "NAME": "Název",
                 "VERSION": "Verze"
-            }
+            },
+            "BACK_BUTTON_LABEL": "Přejít zpět"
         },
         "LANGUAGE": "Jazyk",
         "SIGN_IN": "Přihlásit se",
@@ -51,19 +52,14 @@
             "LOCATION": "Umístění",
             "TELEPHONE": "Telefon",
             "MOBILE": "Mobil",
-            "LOGIN": "Přihlášení",
-            "USERNAME": "Uživatelské jméno",
             "EMAIL": "E-mail",
-            "PASSWORD": "Heslo",
-            "OLD_PASSWORD": "Staré heslo",
-            "FORGOT_PASSWORD": "Zapomenuté heslo",
-            "NEW_PASSWORD": "Nové heslo",
-            "VERIFY_PASSWORD": "Ověření hesla",
             "COMPANY_DETAILS": "Podrobnosti o společnosti",
             "NAME": "Název",
             "ADDRESS": "Adresa",
             "POSTCODE": "PSČ",
-            "INVALID_INPUT": "Neplatný vstup"
+            "INVALID_PHONE_FORMAT": "Zadejte platné telefonní číslo",
+            "INVALID_EMAIL_FORMAT": "Zadejte platnou e‑mailovou adresu",
+            "GO_TO_PERSONAL_FILES_BUTTON_LABEL": "Přejít na osobní soubory"
         },
         "LOCKED_BY": "Uzamknul(a): ",
         "PREVIEW": {
@@ -118,6 +114,13 @@
                     "TITLE": "Oprávnění"
                 }
             },
+            "REPOSITORY_VIEW": {
+                "TITLE": "Repository",
+                "SIDENAV_LINK": {
+                    "LABEL": "Repository",
+                    "TOOLTIP": "View the repository"
+                }
+            },
             "LIBRARIES": {
                 "TITLE": "Knihovny souborů",
                 "DESCRIPTION": "Přejít na knihovny souborů",
@@ -133,6 +136,10 @@
                     "FAVORITE_LIBRARIES": {
                         "TITLE": "Žádné oblíbené knihovny souborů",
                         "TEXT": "Pro snadnější dostupnost můžete označit vybrané knihovny za oblíbené."
+                    },
+                    "ALL_LIBRARIES": {
+                        "TITLE": "Nenalezena žádná knihovna",
+                        "TEXT": "Vytvořte novou knihovnu, abyste mohli začít."
                     }
                 },
                 "MENU": {
@@ -148,6 +155,13 @@
                         "SIDENAV_LINK": {
                             "LABEL": "Oblíbené knihovny",
                             "TOOLTIP": "Přejít do oblíbených knihoven"
+                        }
+                    },
+                    "ALL_LIBRARIES": {
+                        "TITLE": "Všechny knihovny",
+                        "SIDENAV_LINK": {
+                            "LABEL": "Všechny knihovny",
+                            "TOOLTIP": "Přístup ke všem knihovnám"
                         }
                     }
                 },
@@ -260,7 +274,8 @@
                     "LOCATION": "Umístění",
                     "SIZE": "Velikost"
                 },
-                "UNKNOWN_LOCATION": "Neznámé",
+                "UNKNOWN_LOCATION": "Nemáte oprávnění k zobrazení umístění tohoto dokumentu.",
+                "VIEW_ADDITIONAL_LOCATIONS": "Zobrazit další umístění odkazů",
                 "NO_RESULTS": "Parametrům hledání odpovídá 0 výsledků",
                 "EMPTY_SEARCH": "Požadován hledaný výraz",
                 "NO_FILTER_RESULTS": "K vašemu filtru je 0 výsledků",
@@ -305,7 +320,7 @@
             "EDIT_OFFLINE_CANCEL": "Zrušit úpravu",
             "CHANGE_ASPECT": "Upravit aspekty",
             "ADD_ASPECTS": "Přidat aspekty",
-            "FOLDER_INFO": "Informace o složce"
+            "NODE_INFO": "Informace"
         },
         "DIALOGS": {
             "CONFIRM_PURGE": {
@@ -420,6 +435,10 @@
                         "FAIL": "Některé položky ({{ failed }}) nebylo možné přesunout."
                     }
                 },
+                "NODE_CREATE": {
+                    "FILE_FROM_TEMPLATE_SUCCESS": "Soubor {{ name }} byl vytvořen ze šablony",
+                    "FOLDER_FROM_TEMPLATE_SUCCESS": "Složka {{ name }} byla vytvořena ze šablony"
+                },
                 "LIBRARY_DELETED": "Knihovna odstraněna",
                 "LEFT_LIBRARY": "Opustili jste knihovnu",
                 "FAVORITE_NODE_ADDED": "Došlo k přidání {{ name }} do oblíbených",
@@ -459,23 +478,34 @@
         },
         "TOOLTIPS": {
             "COLLAPSE_NAVIGATION": "Sbalit navigační nabídku",
+            "COLLAPSE_NAVIGATION_ALT": "Sbalit ikonu navigační nabídky",
             "OPTIONS_SETTINGS": "Možnosti a nastavení",
             "MY_PROFILE": "Můj profil",
-            "EXPAND_NAVIGATION": "Rozbalit navigační nabídku"
+            "EXPAND_NAVIGATION": "Rozbalit navigační nabídku",
+            "EXPAND_SECTION": "Rozbalit sekci",
+            "COLLAPSE_SECTION": "Sbalit sekci",
+            "EDIT": "Upravit",
+            "CANCEL": "Zrušit",
+            "SAVE": "Uložit"
         },
-        "FOLDER_INFO": {
-            "ICON": "Ikona složky",
-            "TITLE": "Informace o složce",
+        "NODE_INFO": {
+            "ICON": "Ikona uzlu",
+            "TITLE": "Informace",
             "SIZE": "Velikost",
             "NUMBER_OF_FILES": "Počet souborů",
             "CALCULATING": "Probíhá výpočet…",
-            "CALCULATED_SIZE_LARGE": "{{sizeInBytes}} bytů ({{sizeInLargeUnit}} {{unit}} na disku) pro {{count}} souborů",
-            "CALCULATED_SIZE_NORMAL": "{{sizeInBytes}} bytů pro {{count}} souborů",
             "LOCATION": "Umístění",
+            "REFERENCED": "Odkazováno",
             "CREATED": "Vytvořeno",
             "MODIFIED": "Upraveno",
             "DONE": "Dokončeno",
             "ERROR": "Něco se nepovedlo, zavřete toto okno a zkuste to znovu"
+        },
+        "ADDITIONAL_REFERENCES_DIALOG": {
+            "TITLE": "Další umístění odkazu",
+            "NO_LOCATIONS": "{{ name }} není odkazován na žádném umístění.",
+            "DESCRIPTION": "{{ name }} je aktuálně odkazován na těchto umístěních.",
+            "CLOSE": "Zavřít"
         }
     },
     "NODE_SELECTOR": {
@@ -565,7 +595,8 @@
     },
     "SEARCH": {
         "BULK_ACTIONS_DROPDOWN": {
-            "TITLE": "Hromadné akce (počet položek: {{ count }})",
+            "LABEL": "Hromadné akce",
+            "TITLE": "Vybrat akci pro všechny {{ count }} výsledky",
             "BULK_NOT_AVAILABLE": "Hromadné akce (nedostupné)",
             "BULK_NOT_AVAILABLE_TOOLTIP": "Hromadné akce nelze použít bez výsledků vyhledávání"
         },
@@ -576,7 +607,12 @@
             "LIBRARIES": "Knihovny",
             "MIN_LENGTH": "Hledaný výraz musí obsahovat kombinaci alespoň 2 písmen a číslic.",
             "REQUIRED": "Je vyžadován vstup pro vyhledávání.",
-            "WHITESPACE": "Zadání hledání nemůže být pouze mezera."
+            "WHITESPACE": "Zadání hledání nemůže být pouze mezera.",
+            "OPERATORS": "Vyhledávací výraz nesmí začínat, končit nebo být tvořen pouze operátory.",
+            "IN_PREFIX": "V",
+            "FILES_AND_FOLDERS": "Soubory a složky",
+            "RESET": "Resetovat",
+            "SEARCH_IN": "Vyhledávání v"
         },
         "SORT": {
             "SORTING_OPTION": "Řadit podle",
@@ -685,7 +721,8 @@
                 "REFERENCED_DOCUMENTS_HEADER": "Odkazované dokumenty",
                 "REGENERATION_BUTTON_LABEL": "Regenerovat",
                 "COPY_BUTTON_LABEL": "Kopírovat",
-                "COPY_MESSAGE": "Kopírovat odezvu do schránky"
+                "COPY_MESSAGE": "Kopírovat odezvu do schránky",
+                "RELOAD_REFERENCES_BUTTON_LABEL": "Znovu načíst"
             },
             "AGENTS_BUTTON": {
                 "LABEL": "Zjistit v aplikaci Discovery",
@@ -701,7 +738,8 @@
                 "AGENTS_FETCHING": "Chyba při získávání agentů.",
                 "HX_INSIGHT_URL_FETCHING": "Chyba při získávání URL adresy HX Insight.",
                 "LOADING_ERROR": "Hmm... zřejmě se něco nepovedlo.",
-                "PAGE_NOT_AVAILABLE_ERROR": "Stránka není pro tyto podmínky dostupná."
+                "PAGE_NOT_AVAILABLE_ERROR": "Stránka není pro tyto podmínky dostupná.",
+                "REFERENCES_LOADING_ERROR": "Při načítání odkazů došlo k chybě."
             },
             "DISCARD_CHANGES": {
                 "WARNING": "Výstraha!",

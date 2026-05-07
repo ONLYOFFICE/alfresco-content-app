@@ -22,7 +22,7 @@
  * from Hyland Software. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Inject, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, inject } from '@angular/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -34,11 +34,12 @@ import { A11yModule } from '@angular/cdk/a11y';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NotificationService } from '@alfresco/adf-core';
-import { AutoFocusDirective, forbidOnlySpaces, SavedSearchesService } from '@alfresco/adf-content-services';
+import { forbidOnlySpaces } from '@alfresco/adf-content-services';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { take } from 'rxjs/operators';
 import { UniqueSearchNameValidator } from './unique-search-name-validator';
 import { SavedSearchForm } from './saved-search-form.interface';
+import { SavedSearchesContextService } from '../../../../services/saved-searches-context.service';
 
 @Component({
   imports: [
@@ -52,7 +53,6 @@ import { SavedSearchForm } from './saved-search-form.interface';
     A11yModule,
     MatCheckboxModule,
     FormsModule,
-    AutoFocusDirective,
     ReactiveFormsModule,
     MatDialogModule
   ],
@@ -63,16 +63,18 @@ import { SavedSearchForm } from './saved-search-form.interface';
   host: { class: 'aca-save-search-dialog' }
 })
 export class SaveSearchDialogComponent {
+  private readonly dialog = inject<MatDialogRef<SaveSearchDialogComponent>>(MatDialogRef);
+  private readonly notificationService = inject(NotificationService);
+  private readonly savedSearchesService = inject(SavedSearchesContextService);
+  private readonly uniqueSearchNameValidator = inject(UniqueSearchNameValidator);
+  private readonly data = inject<{
+    searchUrl: string;
+  }>(MAT_DIALOG_DATA);
+
   form: FormGroup<SavedSearchForm>;
   disableSubmitButton = false;
 
-  constructor(
-    private readonly dialog: MatDialogRef<SaveSearchDialogComponent>,
-    private readonly notificationService: NotificationService,
-    private readonly savedSearchesService: SavedSearchesService,
-    private readonly uniqueSearchNameValidator: UniqueSearchNameValidator,
-    @Inject(MAT_DIALOG_DATA) private readonly data: { searchUrl: string }
-  ) {
+  constructor() {
     this.form = new FormGroup({
       name: new FormControl('', {
         validators: [Validators.required, forbidOnlySpaces],
@@ -95,7 +97,7 @@ export class SaveSearchDialogComponent {
       .pipe(take(1))
       .subscribe({
         next: () => {
-          this.dialog.close();
+          this.dialog.close(true);
           this.notificationService.showInfo('APP.BROWSE.SEARCH.SAVE_SEARCH.SAVE_SUCCESS');
           this.disableSubmitButton = false;
         },

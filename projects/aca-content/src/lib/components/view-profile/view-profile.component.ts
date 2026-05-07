@@ -23,12 +23,12 @@
  */
 
 import { AlfrescoApiService } from '@alfresco/adf-content-services';
-import { PeopleApi, Person } from '@alfresco/js-api';
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { PeopleApi, Person, LazyApi } from '@alfresco/js-api';
+import { Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable, throwError } from 'rxjs';
-import { AppService } from '@alfresco/aca-shared';
+import { Observable, take, throwError } from 'rxjs';
+import { AppExtensionService, AppService, UserProfileSection } from '@alfresco/aca-shared';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -36,37 +36,66 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DynamicExtensionComponent } from '@alfresco/adf-extensions';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
-  imports: [CommonModule, TranslatePipe, ReactiveFormsModule, MatButtonModule, MatIconModule, MatDividerModule, MatFormFieldModule],
+  imports: [
+    CommonModule,
+    TranslatePipe,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDividerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    DynamicExtensionComponent
+  ],
   selector: 'app-view-profile',
   templateUrl: './view-profile.component.html',
   styleUrls: ['./view-profile.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class ViewProfileComponent implements OnInit {
-  peopleApi: PeopleApi;
+  private readonly router = inject(Router);
+  private readonly apiService = inject(AlfrescoApiService);
+  private readonly appService = inject(AppService);
+  private readonly extensionService = inject(AppExtensionService);
 
-  profileForm: FormGroup;
+  @LazyApi((self: ViewProfileComponent) => new PeopleApi(self.apiService.getInstance()))
+  declare peopleApi: PeopleApi;
+  profileForm = new FormGroup({
+    firstName: new FormControl(''),
+    lastName: new FormControl(''),
+    jobTitle: new FormControl(''),
+    location: new FormControl(''),
+    telephone: new FormControl('', [Validators.pattern('^([0-9]+-)*[0-9]+$')]),
+    mobile: new FormControl('', [Validators.pattern('^([0-9]+-)*[0-9]+$')]),
+    companyName: new FormControl(''),
+    companyPostCode: new FormControl(''),
+    companyAddress: new FormControl(''),
+    companyTelephone: new FormControl('', [Validators.pattern('^([0-9]+-)*[0-9]+$')]),
+    companyEmail: new FormControl('', [Validators.email])
+  });
   personDetails: Person;
-
-  generalSectionDropdown = true;
-  generalSectionButtonsToggle = true;
-
-  loginSectionDropdown = false;
-  loginSectionButtonsToggle = true;
-  passwordSectionDropdown = false;
-
-  contactSectionDropdown = false;
-  contactSectionButtonsToggle = true;
+  generalSectionExpanded = true;
+  generalSectionEditMode = false;
+  contactSectionExpanded = false;
+  contactSectionEditMode = false;
   appNavNarMode$: Observable<'collapsed' | 'expanded'>;
+  sections: UserProfileSection[] = [];
 
-  constructor(
-    private router: Router,
-    apiService: AlfrescoApiService,
-    private appService: AppService
-  ) {
-    this.peopleApi = new PeopleApi(apiService.getInstance());
+  get generalSectionButtonTooltip(): string {
+    return `APP.TOOLTIPS.${this.generalSectionExpanded ? 'COLLAPSE' : 'EXPAND'}_SECTION`;
+  }
+
+  get contactSectionButtonTooltip(): string {
+    return `APP.TOOLTIPS.${this.contactSectionExpanded ? 'COLLAPSE' : 'EXPAND'}_SECTION`;
+  }
+
+  constructor() {
+    const appService = this.appService;
+
     this.appNavNarMode$ = appService.appNavNarMode$.pipe(takeUntilDestroyed());
   }
 
@@ -81,26 +110,30 @@ export class ViewProfileComponent implements OnInit {
       .catch((error) => {
         throwError(error);
       });
+
+    this.extensionService
+      .getUserProfileSections()
+      .pipe(take(1))
+      .subscribe((sections) => (this.sections = sections));
   }
 
-  toggleClick() {
+  toggleNavigationMenu() {
     this.appService.toggleAppNavBar$.next();
   }
 
   populateForm(userInfo: Person) {
-    this.profileForm = new FormGroup({
-      jobTitle: new FormControl(userInfo?.jobTitle || ''),
-      location: new FormControl(userInfo?.location || ''),
-      telephone: new FormControl(userInfo?.telephone || '', [Validators.pattern('^([0-9]+-)*[0-9]+$')]),
-      mobile: new FormControl(userInfo?.mobile || '', [Validators.pattern('^([0-9]+-)*[0-9]+$')]),
-      oldPassword: new FormControl(''),
-      newPassword: new FormControl(''),
-      verifyPassword: new FormControl(''),
-      companyName: new FormControl(userInfo?.company?.organization || ''),
-      companyPostCode: new FormControl(userInfo?.company?.postcode || ''),
-      companyAddress: new FormControl(userInfo?.company?.address1 || ''),
-      companyTelephone: new FormControl(userInfo?.company?.telephone || '', [Validators.pattern('^([0-9]+-)*[0-9]+$')]),
-      companyEmail: new FormControl(userInfo?.company?.email || '', [Validators.email])
+    this.profileForm.setValue({
+      firstName: userInfo?.firstName || '',
+      lastName: userInfo?.lastName || '',
+      jobTitle: userInfo?.jobTitle || '',
+      location: userInfo?.location || '',
+      telephone: userInfo?.telephone || '',
+      mobile: userInfo?.mobile || '',
+      companyName: userInfo?.company?.organization || '',
+      companyPostCode: userInfo?.company?.postcode || '',
+      companyAddress: userInfo?.company?.address1 || '',
+      companyTelephone: userInfo?.company?.telephone || '',
+      companyEmail: userInfo?.company?.email || ''
     });
   }
 
@@ -110,68 +143,37 @@ export class ViewProfileComponent implements OnInit {
     });
   }
 
-  toggleGeneralDropdown() {
-    this.generalSectionDropdown = !this.generalSectionDropdown;
-
-    if (!this.generalSectionDropdown) {
-      this.generalSectionButtonsToggle = true;
-    }
+  toggleGeneralSection() {
+    this.generalSectionExpanded = !this.generalSectionExpanded;
   }
 
-  toggleGeneralButtons() {
-    this.generalSectionButtonsToggle = !this.generalSectionButtonsToggle;
+  toggleGeneralSectionEditMode() {
+    this.generalSectionEditMode = !this.generalSectionEditMode;
 
-    if (!this.generalSectionButtonsToggle) {
-      this.generalSectionDropdown = true;
+    if (this.generalSectionEditMode) {
+      this.generalSectionExpanded = true;
     }
   }
 
   onSaveGeneralData(event) {
-    this.generalSectionButtonsToggle = !this.generalSectionButtonsToggle;
+    this.generalSectionEditMode = false;
     this.updatePersonDetails(event);
-  }
-
-  onSaveLoginData() {
-    this.passwordSectionDropdown = !this.passwordSectionDropdown;
-    this.loginSectionButtonsToggle = !this.loginSectionButtonsToggle;
   }
 
   onSaveCompanyData(event) {
-    this.contactSectionButtonsToggle = !this.contactSectionButtonsToggle;
+    this.contactSectionEditMode = false;
     this.updatePersonDetails(event);
   }
 
-  toggleLoginDropdown() {
-    this.loginSectionDropdown = !this.loginSectionDropdown;
-
-    if (!this.loginSectionDropdown) {
-      this.loginSectionButtonsToggle = true;
-    }
+  toggleContactSection() {
+    this.contactSectionExpanded = !this.contactSectionExpanded;
   }
 
-  toggleLoginButtons() {
-    this.loginSectionButtonsToggle = !this.loginSectionButtonsToggle;
-    this.passwordSectionDropdown = !this.passwordSectionDropdown;
+  toggleContactSectionEditMode() {
+    this.contactSectionEditMode = !this.contactSectionEditMode;
 
-    if (!this.loginSectionButtonsToggle) {
-      this.loginSectionDropdown = true;
-      this.passwordSectionDropdown = true;
-    }
-  }
-
-  toggleContactDropdown() {
-    this.contactSectionDropdown = !this.contactSectionDropdown;
-
-    if (!this.contactSectionDropdown) {
-      this.contactSectionButtonsToggle = true;
-    }
-  }
-
-  toggleContactButtons() {
-    this.contactSectionButtonsToggle = !this.contactSectionButtonsToggle;
-
-    if (!this.contactSectionButtonsToggle) {
-      this.contactSectionDropdown = true;
+    if (this.contactSectionEditMode) {
+      this.contactSectionExpanded = true;
     }
   }
 

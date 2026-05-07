@@ -25,7 +25,7 @@
 import { AppStore, SetSelectedNodesAction, getAppSelection } from '@alfresco/aca-shared/store';
 import { AppHookService, UserProfileService } from '@alfresco/aca-shared';
 import { SelectionState } from '@alfresco/adf-extensions';
-import { Component, inject, ViewEncapsulation } from '@angular/core';
+import { Component, inject, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { LibraryMembershipDirective, LibraryMembershipErrorEvent, LibraryMembershipToggleEvent } from '@alfresco/adf-content-services';
@@ -34,6 +34,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
 import { NotificationService } from '@alfresco/adf-core';
+import { MatMenuItem } from '@angular/material/menu';
 
 @Component({
   imports: [CommonModule, TranslatePipe, MatButtonModule, MatIconModule, LibraryMembershipDirective],
@@ -57,10 +58,13 @@ import { NotificationService } from '@alfresco/adf-core';
   host: { class: 'app-toggle-join-library' }
 })
 export class ToggleJoinLibraryButtonComponent {
-  private userProfileService = inject(UserProfileService);
-  private notificationService = inject(NotificationService);
-  private appHookService = inject(AppHookService);
-  private store = inject(Store<AppStore>);
+  @ViewChild(MatMenuItem)
+  menuItem: MatMenuItem;
+
+  private readonly userProfileService = inject(UserProfileService);
+  private readonly notificationService = inject(NotificationService);
+  private readonly appHookService = inject(AppHookService);
+  private readonly store = inject(Store<AppStore>);
 
   selection$: Observable<SelectionState>;
   profile$ = this.userProfileService.userProfile$;

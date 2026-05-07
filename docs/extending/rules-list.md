@@ -57,7 +57,8 @@ Application related evaluators which can be used to check various different aspe
 | 5.1.1  | canToggleFileLock                   | Checks whether the user can lock/unlock the selected file                                                              |
 | 5.1.1  | isSmartFolder                       | Checks if the selected folder has the 'smf:customConfigSmartFolder' or the 'smf:systemConfigSmartFolder' aspect or not |
 | 5.1.1  | isMultiSelection                    | Checks if the user has selected multiple files                                                                         |
-| 6.1.0  | canPrintFile                        | Checks if current file can be printed or not (media files such as audio/video cannot be printed).                      |  
+| 6.1.0  | canPrintFile                        | Checks if current file can be printed or not (media files such as audio/video cannot be printed).                      |
+| 7.4.0  | app.selection.isCheckedOut          | Checks if selected node contains `cm:checkedOut` aspect.                                                               |
 
 #### Navigation Rules/Evaluators
 
@@ -76,4 +77,12 @@ or not.
 | 1.7.0   | app.navigation.isPreview        | Current page is **Preview**.                                     |
 | 5.1.1   | app.navigation.isDetails        | User is currently on the **Folder Details** page.                |
 
+#### ACS Versions compatibility Rules/Evaluators
 
+Rules/Evaluators created for specific features in ADW to be checked if supported in current ACS version. Evaluators are created using  **createVersionRule** helper function locking specific version number into the rule.
+
+| Version | Key                             | Description                                                               |
+|---------|---------------------------------|---------------------------------------------------------------------------|
+| 8.1.0   | isPreferencesApiAvailable       | Checks whether current ACS version supports PUT method in Preferences API |
+| 8.1.0   | isNodeInfoAvailable             | Checks whether current ACS version supports folder size calculation API   |
+| 8.1.0   | isBulkActionsAvailable          | Checks whether current ACS version supports bulk update feature           |

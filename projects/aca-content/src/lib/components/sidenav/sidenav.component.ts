@@ -35,9 +35,10 @@ import { MatListModule } from '@angular/material/list';
 import { ExpandMenuComponent } from './components/expand-menu.component';
 import { NavigationEnd } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  imports: [CommonModule, SidenavHeaderComponent, MatListModule, ExpandMenuComponent, DynamicExtensionComponent],
+  imports: [CommonModule, SidenavHeaderComponent, MatListModule, ExpandMenuComponent, DynamicExtensionComponent, TranslatePipe],
   selector: 'app-sidenav',
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],
@@ -45,6 +46,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   host: { class: 'app-sidenav' }
 })
 export class SidenavComponent implements OnInit {
+  private readonly store = inject<Store<AppStore>>(Store);
+  private readonly extensions = inject(AppExtensionService);
+  private readonly appService = inject(AppService);
+  private readonly navigationHistoryService = inject(NavigationHistoryService);
+
   @Input()
   data: {
     layout?: SidenavLayoutComponent;
@@ -54,13 +60,6 @@ export class SidenavComponent implements OnInit {
   groups: Array<NavBarGroupRef> = [];
 
   private readonly destroyRef = inject(DestroyRef);
-
-  constructor(
-    private store: Store<AppStore>,
-    private extensions: AppExtensionService,
-    private appService: AppService,
-    private navigationHistoryService: NavigationHistoryService
-  ) {}
 
   ngOnInit() {
     this.store

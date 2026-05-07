@@ -34,7 +34,8 @@
                 "TITLE": "Pacchetti",
                 "NAME": "Nome",
                 "VERSION": "Versione"
-            }
+            },
+            "BACK_BUTTON_LABEL": "Torna indietro"
         },
         "LANGUAGE": "Lingua",
         "SIGN_IN": "Accedi",
@@ -51,19 +52,14 @@
             "LOCATION": "Posizione",
             "TELEPHONE": "Telefono",
             "MOBILE": "Cellulare",
-            "LOGIN": "Login",
-            "USERNAME": "Nome utente",
             "EMAIL": "E-mail",
-            "PASSWORD": "Password",
-            "OLD_PASSWORD": "Vecchia password",
-            "FORGOT_PASSWORD": "Password dimenticata",
-            "NEW_PASSWORD": "Nuova password",
-            "VERIFY_PASSWORD": "Verifica password",
             "COMPANY_DETAILS": "Dettagli azienda",
             "NAME": "Nome",
             "ADDRESS": "Indirizzo",
             "POSTCODE": "Codice postale",
-            "INVALID_INPUT": "Input non valido"
+            "INVALID_PHONE_FORMAT": "Inserisci un numero di telefono valido",
+            "INVALID_EMAIL_FORMAT": "Inserisci un indirizzo email valido",
+            "GO_TO_PERSONAL_FILES_BUTTON_LABEL": "Vai a File personali"
         },
         "LOCKED_BY": "Bloccato da: ",
         "PREVIEW": {
@@ -118,6 +114,13 @@
                     "TITLE": "Autorizzazioni"
                 }
             },
+            "REPOSITORY_VIEW": {
+                "TITLE": "Repository",
+                "SIDENAV_LINK": {
+                    "LABEL": "Repository",
+                    "TOOLTIP": "View the repository"
+                }
+            },
             "LIBRARIES": {
                 "TITLE": "Librerie file",
                 "DESCRIPTION": "Accedi alle librerie di file",
@@ -133,6 +136,10 @@
                     "FAVORITE_LIBRARIES": {
                         "TITLE": "Nessuna libreria preferita",
                         "TEXT": "Imposta una libreria come preferita per trovarla facilmente in seguito."
+                    },
+                    "ALL_LIBRARIES": {
+                        "TITLE": "Nessuna libreria trovata",
+                        "TEXT": "Crea una nuova libreria per iniziare."
                     }
                 },
                 "MENU": {
@@ -148,6 +155,13 @@
                         "SIDENAV_LINK": {
                             "LABEL": "Librerie preferite",
                             "TOOLTIP": "Accedi alle librerie preferite"
+                        }
+                    },
+                    "ALL_LIBRARIES": {
+                        "TITLE": "Tutte le biblioteche",
+                        "SIDENAV_LINK": {
+                            "LABEL": "Tutte le biblioteche",
+                            "TOOLTIP": "Accedi a tutte le biblioteche"
                         }
                     }
                 },
@@ -260,7 +274,8 @@
                     "LOCATION": "Posizione",
                     "SIZE": "Dimensione"
                 },
-                "UNKNOWN_LOCATION": "Sconosciuto",
+                "UNKNOWN_LOCATION": "L'utente non dispone dell'autorizzazione per visualizzare la posizione di questo documento.",
+                "VIEW_ADDITIONAL_LOCATIONS": "Visualizza posizioni di riferimento aggiuntive",
                 "NO_RESULTS": "La ricerca ha restituito 0 risultati",
                 "EMPTY_SEARCH": "Termine di ricerca obbligatorio",
                 "NO_FILTER_RESULTS": "Il filtro ha restituito 0 risultati",
@@ -305,7 +320,7 @@
             "EDIT_OFFLINE_CANCEL": "Annulla modifica",
             "CHANGE_ASPECT": "Modifica aspetti",
             "ADD_ASPECTS": "Aggiungi aspetti",
-            "FOLDER_INFO": "Informazioni Cartella"
+            "NODE_INFO": "Informazione"
         },
         "DIALOGS": {
             "CONFIRM_PURGE": {
@@ -420,6 +435,10 @@
                         "FAIL": "Impossibile spostare {{ failed }}."
                     }
                 },
+                "NODE_CREATE": {
+                    "FILE_FROM_TEMPLATE_SUCCESS": "Il file {{ name }} è stato creato dal modello",
+                    "FOLDER_FROM_TEMPLATE_SUCCESS": "La cartella {{ name }} è stata creata dal modello"
+                },
                 "LIBRARY_DELETED": "Libreria eliminata",
                 "LEFT_LIBRARY": "Sei uscito dalla libreria",
                 "FAVORITE_NODE_ADDED": "{{ name }} Aggiunto",
@@ -459,23 +478,34 @@
         },
         "TOOLTIPS": {
             "COLLAPSE_NAVIGATION": "Comprimi il menu di navigazione",
+            "COLLAPSE_NAVIGATION_ALT": "Icona per comprimere il menu di navigazione",
             "OPTIONS_SETTINGS": "Opzioni e impostazioni",
             "MY_PROFILE": "Il mio profilo",
-            "EXPAND_NAVIGATION": "Espande il menu di navigazione"
+            "EXPAND_NAVIGATION": "Espande il menu di navigazione",
+            "EXPAND_SECTION": "Espandi sezione",
+            "COLLAPSE_SECTION": "Chiudi sezione",
+            "EDIT": "Modifica",
+            "CANCEL": "Annulla",
+            "SAVE": "Salva"
         },
-        "FOLDER_INFO": {
-            "ICON": "Icona Cartella",
-            "TITLE": "Informazioni Cartella",
+        "NODE_INFO": {
+            "ICON": "Icona nodo",
+            "TITLE": "Informazione",
             "SIZE": "Dimensione",
             "NUMBER_OF_FILES": "Numero di file",
             "CALCULATING": "Calcolo...",
-            "CALCULATED_SIZE_LARGE": "{{sizeInBytes}} bytes ({{sizeInLargeUnit}} {{unit}} sul disco) per i file {{count}}",
-            "CALCULATED_SIZE_NORMAL": "{{sizeInBytes}} bytes per i file {{count}}",
-            "LOCATION": "Località",
+            "LOCATION": "Posizione",
+            "REFERENCED": "Riferito",
             "CREATED": "Creato",
             "MODIFIED": "Modificato",
             "DONE": "Fatto",
             "ERROR": "Qualcosa è andato storto, chiudere questa finestra di dialogo e riprovare"
+        },
+        "ADDITIONAL_REFERENCES_DIALOG": {
+            "TITLE": "Posizione di riferimento aggiuntiva",
+            "NO_LOCATIONS": "{{ name }} non è referenziato in alcuna posizione.",
+            "DESCRIPTION": "{{ name }} è attualmente referenziato in queste posizioni.",
+            "CLOSE": "Chiudi"
         }
     },
     "NODE_SELECTOR": {
@@ -565,7 +595,8 @@
     },
     "SEARCH": {
         "BULK_ACTIONS_DROPDOWN": {
-            "TITLE": "Azioni in blocco ({{ count }} elementi)",
+            "LABEL": "Azioni collettive",
+            "TITLE": "Selezionare un’azione per tutti i {{ count }} risultati",
             "BULK_NOT_AVAILABLE": "Azioni in blocco (non disponibile)",
             "BULK_NOT_AVAILABLE_TOOLTIP": "Azioni in blocco non possono essere utilizzate senza i risultati di ricerca"
         },
@@ -576,7 +607,12 @@
             "LIBRARIES": "Librerie",
             "MIN_LENGTH": "La stringa di ricerca deve contenere almeno 2 caratteri alfanumerici.",
             "REQUIRED": "L'input di ricerca è obbligatorio.",
-            "WHITESPACE": "L'input di ricerca non può essere solo spazi bianchi."
+            "WHITESPACE": "L'input di ricerca non può essere solo spazi bianchi.",
+            "OPERATORS": "L’input di ricerca non può iniziare, terminare o essere composto solo da operatori",
+            "IN_PREFIX": "In",
+            "FILES_AND_FOLDERS": "File e cartelle",
+            "RESET": "Ripristina",
+            "SEARCH_IN": "Cerca in"
         },
         "SORT": {
             "SORTING_OPTION": "Ordina per",
@@ -685,7 +721,8 @@
                 "REFERENCED_DOCUMENTS_HEADER": "Documenti referenziati",
                 "REGENERATION_BUTTON_LABEL": "Rigenera",
                 "COPY_BUTTON_LABEL": "Copia",
-                "COPY_MESSAGE": "Risposta copiata negli Appunti"
+                "COPY_MESSAGE": "Risposta copiata negli Appunti",
+                "RELOAD_REFERENCES_BUTTON_LABEL": "Ricarica"
             },
             "AGENTS_BUTTON": {
                 "LABEL": "Chiedi a Discovery",
@@ -701,7 +738,8 @@
                 "AGENTS_FETCHING": "Si è verificato un errore durante il recupero degli agenti.",
                 "HX_INSIGHT_URL_FETCHING": "Si è verificato un errore durante il recupero dell'URL di HX Insight.",
                 "LOADING_ERROR": "Sembra che qualcosa sia andato storto.",
-                "PAGE_NOT_AVAILABLE_ERROR": "La pagina non è disponibile per queste condizioni."
+                "PAGE_NOT_AVAILABLE_ERROR": "La pagina non è disponibile per queste condizioni.",
+                "REFERENCES_LOADING_ERROR": "Si è verificato un errore durante il caricamento dei riferimenti."
             },
             "DISCARD_CHANGES": {
                 "WARNING": "Attenzione.",

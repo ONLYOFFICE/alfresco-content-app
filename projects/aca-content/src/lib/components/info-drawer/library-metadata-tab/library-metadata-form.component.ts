@@ -22,7 +22,7 @@
  * from Hyland Software. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, DestroyRef, inject, Input, OnChanges, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, DestroyRef, ElementRef, inject, Input, OnChanges, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import {
   FormControl,
   FormGroupDirective,
@@ -34,7 +34,7 @@ import {
   ValidationErrors,
   Validators
 } from '@angular/forms';
-import { QueriesApi, SiteEntry, SitePaging } from '@alfresco/js-api';
+import { QueriesApi, SiteEntry, SitePaging, LazyApi } from '@alfresco/js-api';
 import { Store } from '@ngrx/store';
 import { AppStore, isAdmin, UpdateLibraryAction } from '@alfresco/aca-shared/store';
 import { AppHookService } from '@alfresco/aca-shared';
@@ -47,7 +47,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
-import { A11yModule } from '@angular/cdk/a11y';
 import { MatButtonModule } from '@angular/material/button';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgForOf } from '@angular/common';
@@ -69,7 +68,6 @@ export class InstantErrorStateMatcher implements ErrorStateMatcher {
     MatSelectModule,
     MatOptionModule,
     MatInputModule,
-    A11yModule,
     MatButtonModule,
     NgForOf
   ],
@@ -79,13 +77,14 @@ export class InstantErrorStateMatcher implements ErrorStateMatcher {
   encapsulation: ViewEncapsulation.None
 })
 export class LibraryMetadataFormComponent implements OnInit, OnChanges {
-  private _queriesApi: QueriesApi;
+  private readonly alfrescoApiService = inject(AlfrescoApiService);
+  protected readonly store = inject<Store<AppStore>>(Store);
+  private readonly appHookService = inject(AppHookService);
+
   private _titleErrorTranslationKey: string;
 
-  get queriesApi(): QueriesApi {
-    this._queriesApi = this._queriesApi ?? new QueriesApi(this.alfrescoApiService.getInstance());
-    return this._queriesApi;
-  }
+  @LazyApi((self: LibraryMetadataFormComponent) => new QueriesApi(self.alfrescoApiService.getInstance()))
+  declare queriesApi: QueriesApi;
 
   get titleErrorTranslationKey(): string {
     return this._titleErrorTranslationKey;
@@ -113,13 +112,9 @@ export class LibraryMetadataFormComponent implements OnInit, OnChanges {
   canUpdateLibrary = false;
   isAdmin = false;
 
+  @ViewChild('libraryNameInput')
+  private readonly libraryNameInput: ElementRef<HTMLInputElement>;
   private readonly destroyRef = inject(DestroyRef);
-
-  constructor(
-    private readonly alfrescoApiService: AlfrescoApiService,
-    protected readonly store: Store<AppStore>,
-    private readonly appHookService: AppHookService
-  ) {}
 
   toggleEdit() {
     if (this.form.enabled) {
@@ -131,6 +126,7 @@ export class LibraryMetadataFormComponent implements OnInit, OnChanges {
         emitEvent: false
       });
       this.form.controls.id.disable();
+      this.libraryNameInput.nativeElement.focus();
     }
   }
 

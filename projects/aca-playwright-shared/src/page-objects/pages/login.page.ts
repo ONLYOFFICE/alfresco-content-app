@@ -31,7 +31,7 @@ interface LoginOptions {
   withNavigation?: boolean;
 }
 export class LoginPage extends BasePage {
-  private static pageUrl = 'login';
+  private static readonly pageUrl = 'login';
 
   constructor(page: Page) {
     super(page, LoginPage.pageUrl);
@@ -53,7 +53,7 @@ export class LoginPage extends BasePage {
     await this.submitButton.click();
 
     if (options?.waitForLoading) {
-      await Promise.all([this.page.waitForLoadState('domcontentloaded'), this.spinner.waitForReload()]);
+      await Promise.all([this.page.waitForLoadState('domcontentloaded'), this.spinnerWaitForReload()]);
     }
   }
 

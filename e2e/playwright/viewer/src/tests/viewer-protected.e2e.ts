@@ -26,6 +26,7 @@ import { expect } from '@playwright/test';
 import { ApiClientFactory, getUserState, test, TEST_FILES, Utils } from '@alfresco/aca-playwright-shared';
 
 test.use({ storageState: getUserState('hruser') });
+
 test.describe('viewer file', () => {
   const apiClientFactory = new ApiClientFactory();
   const randomFolderName = `viewer-protected-${Utils.random()}`;
@@ -80,9 +81,10 @@ test.describe('viewer file', () => {
   });
 
   test('[XAT-5470] Refresh the page while Password dialog is open', async ({ personalFiles }) => {
+    await personalFiles.viewer.viewerLocator.waitFor({ state: 'visible' });
     await personalFiles.passwordDialog.enterPassword(TEST_FILES.PDF_PROTECTED.password);
-    await personalFiles.reload({ waitUntil: 'domcontentloaded' });
-    await personalFiles.viewer.waitForViewerToOpen();
+
+    await personalFiles.page.waitForLoadState('networkidle');
 
     expect(await personalFiles.viewer.isPdfViewerContentDisplayed(), 'file content is displayed').toBe(false);
     expect(await personalFiles.passwordDialog.isDialogOpen(), 'Password dialog not open').toBe(true);

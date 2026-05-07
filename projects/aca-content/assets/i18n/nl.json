@@ -34,7 +34,8 @@
                 "TITLE": "Pakketten",
                 "NAME": "Naam",
                 "VERSION": "Versie"
-            }
+            },
+            "BACK_BUTTON_LABEL": "Teruggaan"
         },
         "LANGUAGE": "Taal",
         "SIGN_IN": "Aanmelden",
@@ -51,19 +52,14 @@
             "LOCATION": "Locatie",
             "TELEPHONE": "Telefoon",
             "MOBILE": "Mobiel",
-            "LOGIN": "Aanmelden",
-            "USERNAME": "Gebruikersnaam",
             "EMAIL": "E-mail",
-            "PASSWORD": "Wachtwoord",
-            "OLD_PASSWORD": "Oud wachtwoord",
-            "FORGOT_PASSWORD": "Wachtwoord vergeten",
-            "NEW_PASSWORD": "Nieuw wachtwoord",
-            "VERIFY_PASSWORD": "Wachtwoord bevestigen",
             "COMPANY_DETAILS": "Bedrijfsgegevens",
             "NAME": "Naam",
             "ADDRESS": "Adres",
             "POSTCODE": "Postcode",
-            "INVALID_INPUT": "Ongeldige invoer"
+            "INVALID_PHONE_FORMAT": "Voer een geldig telefoonnummer in",
+            "INVALID_EMAIL_FORMAT": "Voer een geldig e-mailadres in",
+            "GO_TO_PERSONAL_FILES_BUTTON_LABEL": "Ga naar persoonlijke bestanden"
         },
         "LOCKED_BY": "Vergrendeld door: ",
         "PREVIEW": {
@@ -118,6 +114,13 @@
                     "TITLE": "Rechten"
                 }
             },
+            "REPOSITORY_VIEW": {
+                "TITLE": "Repository",
+                "SIDENAV_LINK": {
+                    "LABEL": "Repository",
+                    "TOOLTIP": "View the repository"
+                }
+            },
             "LIBRARIES": {
                 "TITLE": "Bestandsbibliotheken",
                 "DESCRIPTION": "Toegang krijgen tot bestandsbibliotheken",
@@ -133,6 +136,10 @@
                     "FAVORITE_LIBRARIES": {
                         "TITLE": "Geen favoriete bibliotheken",
                         "TEXT": "Voeg een bibliotheek toe aan uw favorieten zodat u deze later gemakkelijk kunt vinden."
+                    },
+                    "ALL_LIBRARIES": {
+                        "TITLE": "Geen bibliotheek gevonden",
+                        "TEXT": "Maak een nieuwe bibliotheek aan om te beginnen."
                     }
                 },
                 "MENU": {
@@ -148,6 +155,13 @@
                         "SIDENAV_LINK": {
                             "LABEL": "Favoriete bibliotheken",
                             "TOOLTIP": "Toegang krijgen tot mijn favoriete bibliotheken"
+                        }
+                    },
+                    "ALL_LIBRARIES": {
+                        "TITLE": "Alle bibliotheken",
+                        "SIDENAV_LINK": {
+                            "LABEL": "Alle bibliotheken",
+                            "TOOLTIP": "Toegang tot alle bibliotheken"
                         }
                     }
                 },
@@ -260,7 +274,8 @@
                     "LOCATION": "Locatie",
                     "SIZE": "Grootte"
                 },
-                "UNKNOWN_LOCATION": "Onbekend",
+                "UNKNOWN_LOCATION": "U hebt geen toestemming om de locatie van dit document te bekijken.",
+                "VIEW_ADDITIONAL_LOCATIONS": "Aanvullende referentielocaties weergeven",
                 "NO_RESULTS": "Uw zoekopdracht heeft 0 resultaten opgeleverd",
                 "EMPTY_SEARCH": "Zoekterm vereist",
                 "NO_FILTER_RESULTS": "Uw filter heeft 0 resultaten opgeleverd",
@@ -305,7 +320,7 @@
             "EDIT_OFFLINE_CANCEL": "Bewerken annuleren",
             "CHANGE_ASPECT": "Aspecten bewerken",
             "ADD_ASPECTS": "Aspecten toevoegen",
-            "FOLDER_INFO": "Folder Information"
+            "NODE_INFO": "Informatie"
         },
         "DIALOGS": {
             "CONFIRM_PURGE": {
@@ -420,6 +435,10 @@
                         "FAIL": "Kan {{ failed }} niet verplaatsen."
                     }
                 },
+                "NODE_CREATE": {
+                    "FILE_FROM_TEMPLATE_SUCCESS": "Bestand {{ name }} is gemaakt op basis van de sjabloon",
+                    "FOLDER_FROM_TEMPLATE_SUCCESS": "Map {{ name }} is gemaakt op basis van de sjabloon"
+                },
                 "LIBRARY_DELETED": "Bibliotheek verwijderd",
                 "LEFT_LIBRARY": "U hebt de bibliotheek verlaten",
                 "FAVORITE_NODE_ADDED": "{{ name }} toegevoegd aan favorieten",
@@ -459,23 +478,34 @@
         },
         "TOOLTIPS": {
             "COLLAPSE_NAVIGATION": "Navigatiemenu samenvouwen",
+            "COLLAPSE_NAVIGATION_ALT": "Navigatiemenu pictogram inklappen",
             "OPTIONS_SETTINGS": "Opties en instellingen",
             "MY_PROFILE": "Mijn profiel",
-            "EXPAND_NAVIGATION": "Navigatiemenu uitvouwen"
+            "EXPAND_NAVIGATION": "Navigatiemenu uitvouwen",
+            "EXPAND_SECTION": "Sectie uitvouwen",
+            "COLLAPSE_SECTION": "Sectie samenvouwen",
+            "EDIT": "Bewerken",
+            "CANCEL": "Annuleren",
+            "SAVE": "Opslaan"
         },
-        "FOLDER_INFO": {
-            "ICON": "Mappictogram",
-            "TITLE": "Folder Information",
+        "NODE_INFO": {
+            "ICON": "Node Icon",
+            "TITLE": "Informatie",
             "SIZE": "Grootte",
             "NUMBER_OF_FILES": "Aantal bestanden",
             "CALCULATING": "Wordt berekend...",
-            "CALCULATED_SIZE_LARGE": "{{sizeInBytes}} bytes ({{sizeInLargeUnit}} {{unit}} op schijf) voor {{count}} bestanden",
-            "CALCULATED_SIZE_NORMAL": "{{sizeInBytes}} bytes voor {{count}} bestanden",
             "LOCATION": "Locatie",
+            "REFERENCED": "Gerefereerd",
             "CREATED": "Aangemaakt",
             "MODIFIED": "Gewijzigd",
             "DONE": "Klaar",
             "ERROR": "Er is iets fout gegaan. Sluit dit dialoogvenster en probeer het opnieuw"
+        },
+        "ADDITIONAL_REFERENCES_DIALOG": {
+            "TITLE": "Aanvullende referentielocatie",
+            "NO_LOCATIONS": "{{ name }} wordt op geen enkele locatie gerefereerd.",
+            "DESCRIPTION": "{{ name }} wordt momenteel op deze locaties gerefereerd.",
+            "CLOSE": "Sluiten"
         }
     },
     "NODE_SELECTOR": {
@@ -565,7 +595,8 @@
     },
     "SEARCH": {
         "BULK_ACTIONS_DROPDOWN": {
-            "TITLE": "Bulkacties ({{ count }} items)",
+            "LABEL": "Bulk acties",
+            "TITLE": "Selecteer een actie voor alle {{ count }} resultaten",
             "BULK_NOT_AVAILABLE": "Bulkacties (niet beschikbaar)",
             "BULK_NOT_AVAILABLE_TOOLTIP": "Bulkacties kunnen niet gebruikt worden zonder zoekresultaten"
         },
@@ -576,7 +607,12 @@
             "LIBRARIES": "Bibliotheken",
             "MIN_LENGTH": "Invoer voor een zoekopdracht moet uit minstens 2 alfanumerieke tekens bestaan.",
             "REQUIRED": "Zoekinvoer is vereist.",
-            "WHITESPACE": "Zoekinvoer kan niet alleen witruimte zijn."
+            "WHITESPACE": "Zoekinvoer kan niet alleen witruimte zijn.",
+            "OPERATORS": "Zoekinvoer mag niet beginnen of eindigen met, of uitsluitend uit operatoren bestaan",
+            "IN_PREFIX": "In",
+            "FILES_AND_FOLDERS": "Bestanden en mappen",
+            "RESET": "Opnieuw instellen",
+            "SEARCH_IN": "Zoeken in"
         },
         "SORT": {
             "SORTING_OPTION": "Sorteren op",
@@ -685,7 +721,8 @@
                 "REFERENCED_DOCUMENTS_HEADER": "Referentiedocumenten",
                 "REGENERATION_BUTTON_LABEL": "Regenereren",
                 "COPY_BUTTON_LABEL": "Kopiëren",
-                "COPY_MESSAGE": "Antwoord gekopieerd naar klembord"
+                "COPY_MESSAGE": "Antwoord gekopieerd naar klembord",
+                "RELOAD_REFERENCES_BUTTON_LABEL": "Opnieuw laden"
             },
             "AGENTS_BUTTON": {
                 "LABEL": "Vraag Discovery",
@@ -701,7 +738,8 @@
                 "AGENTS_FETCHING": "Fout bij het ophalen van agenten.",
                 "HX_INSIGHT_URL_FETCHING": "Fout bij het ophalen van HX Insight URL.",
                 "LOADING_ERROR": "Hmm... er lijkt iets te zijn misgegaan.",
-                "PAGE_NOT_AVAILABLE_ERROR": "Pagina is niet beschikbaar voor deze voorwaarden."
+                "PAGE_NOT_AVAILABLE_ERROR": "Pagina is niet beschikbaar voor deze voorwaarden.",
+                "REFERENCES_LOADING_ERROR": "Er is iets misgegaan tijdens het laden van de referenties."
             },
             "DISCARD_CHANGES": {
                 "WARNING": "Waarschuwing!",

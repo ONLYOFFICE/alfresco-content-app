@@ -29,7 +29,7 @@ import { PaginationActionsType, PaginationComponent } from '../pagination.compon
 import { timeouts } from '../../../utils';
 
 export class DataTableComponent extends BaseComponent {
-  private static rootElement = 'adf-datatable';
+  private static readonly rootElement = 'adf-datatable';
   contextMenuActions = new MatMenuComponent(this.page);
 
   constructor(page: Page, rootElement = DataTableComponent.rootElement) {
@@ -37,10 +37,7 @@ export class DataTableComponent extends BaseComponent {
   }
 
   public pagination = new PaginationComponent(this.page);
-  body = this.getChild('.adf-datatable-body');
   getEmptyFolderLocator = this.getChild('.adf-empty-folder');
-  getEmptyContentTitleLocator = this.getChild('adf-empty-content .adf-empty-content__title');
-  getEmptyContentSubTitleLocator = this.getChild('adf-empty-content .adf-empty-content__subtitle');
   getSelectedRow = this.getChild('.adf-datatable-row.adf-is-selected');
   sortedColumnHeader = this.getChild(`.adf-datatable__header--sorted-asc .adf-datatable-cell-header-content .adf-datatable-cell-value,
                                       .adf-datatable__header--sorted-desc .adf-datatable-cell-header-content .adf-datatable-cell-value`);
@@ -50,18 +47,15 @@ export class DataTableComponent extends BaseComponent {
   emptyListSubtitle = this.getChild('.adf-empty-content__subtitle');
   emptySearchText = this.getChild('.empty-search__text');
   emptyListTest = this.getChild('adf-custom-empty-content-template');
-  paginationButton = this.page.locator('.adf-pagination__block button').nth(0);
-  paginationOptions = this.page.locator('#cdk-overlay-0 button');
-  sitesVisibility = this.page.locator('.adf-datatable-body [data-automation-id*="datatable-row"] [aria-label="Visibility"]');
-  sitesName = this.page.locator('.adf-datatable-body [data-automation-id*="datatable-row"] [aria-label="Name"]');
-  sitesRole = this.page.locator('.adf-datatable-body [data-automation-id*="datatable-row"] [aria-label="My Role"]');
-  lockOwner = this.page.locator('.aca-locked-by--name');
-  uncheckedCheckbox = this.page.locator('.mat-mdc-checkbox');
-  checkedCheckbox = this.page.locator('.mat-mdc-checkbox-checked');
+  sitesVisibility = this.getChild('.adf-datatable-body [data-automation-id*="datatable-row"] [aria-label="Visibility"]');
+  sitesName = this.getChild('.adf-datatable-body [data-automation-id*="datatable-row"] [aria-label="Name"]');
+  sitesRole = this.getChild('.adf-datatable-body [data-automation-id*="datatable-row"] [aria-label="My Role"]');
+  lockOwner = '.aca-locked-by--name';
   highlightedText = '.aca-highlight';
   searchFileName = '.search-file-name';
   searchFileDescription = '[data-automation-id="search-results-entry-description"]';
   searchFileContent = '.aca-result-content';
+  noPermissionsView = this.page.locator('aca-generic-error');
 
   /** Locator for row (or rows) */
   getRowLocator = this.page.getByRole('rowgroup').nth(1).locator('adf-datatable-row');
@@ -75,15 +69,6 @@ export class DataTableComponent extends BaseComponent {
    * @returns reference to cell element which contains text.
    */
   getRowByName = (name: string | number): Locator => this.getChild(`adf-datatable-row`, { hasText: name.toString() });
-
-  /**
-   * Method used in cases where we want to check that some record is visible in the datatable.
-   * But we want to check it by column header title and value of this column.
-   *
-   * @returns reference to cell element which contains text.
-   */
-  getRowByColumnTitleAndItsCellValue = (columnTitle: string, cellValue: string | number): Locator =>
-    this.page.locator(`//div[contains(@title, '${columnTitle}')]//span[contains(text(), '${cellValue}')]/ancestor::adf-datatable-row`);
 
   /**
    * Method used in cases where we want to retrieve a row from the datatable based on its numerical order within the array.
@@ -101,36 +86,6 @@ export class DataTableComponent extends BaseComponent {
   getCellLinkByName = (name: string): Locator => this.getChild('.adf-cell-value span[role="link"]', { hasText: name });
 
   /**
-   * Method used in cases where we want to localize the element by [aria-label]
-   *
-   * @returns reference to cell element.
-   */
-  getByAriaLabelTitle = (title: string): Locator => this.getChild(`[aria-label="${title}"]`);
-
-  /**
-   * Method used in cases where we want to get the button (hamburger menu) for row element
-   *
-   * @returns reference to menu placed in row localized by the name
-   */
-  getActionsButtonByName = (name: string): Locator =>
-    this.getRowByName(name).locator('mat-icon', { hasText: new RegExp(`^\\s*more_vert\\s*$`, 'g') });
-
-  /**
-   * Method used in cases where we want to get the edit button and there is no hamburger menu
-   *
-   * @returns reference to edit button placed in row localized by the name
-   */
-  getEditButtonByName = (name: string): Locator => this.getRowByName(name).locator('button#editButton');
-
-  /**
-   * Method used in cases where we want to get the button and there is no hamburger menu
-   *
-   * @returns reference to button placed in row localized by the name
-   */
-  getButtonByNameForSpecificRow = (elementTitleInRow: string, buttonTitle: string): Locator =>
-    this.getRowByName(elementTitleInRow).locator('button', { hasText: buttonTitle });
-
-  /**
    * Method used in cases where you want to get some specific cell (by column name) for row which contains some name/title/etc.
    *
    * @returns reference to cell element
@@ -142,11 +97,7 @@ export class DataTableComponent extends BaseComponent {
    *
    * @returns reference to checkbox placed in row localized by the name
    */
-  getCheckboxForElement = (item: string): Locator => this.getRowByName(item).locator('.mat-mdc-checkbox');
-
-  getColumnHeaderByTitleLocator = (headerTitle: string): Locator => this.getChild('[role="columnheader"]', { hasText: headerTitle });
-
-  getSearchResultLinkByName = (name: string): Locator => this.getChild('.aca-search-results-row span[role="link"]', { hasText: name });
+  getCheckboxForElement = (item: string): Locator => this.getRowByName(item).locator('[type="checkbox"]');
 
   getColumnValuesByName = (name: string): Locator => this.getChild(`div[title="${name}"] span`);
 
@@ -180,22 +131,6 @@ export class DataTableComponent extends BaseComponent {
   }
 
   /**
-   * Click action from the expandable kebab menu for the element in datatable
-   *
-   * @param name title of the record you would like to proceed
-   * @param action provide button title for the action
-   * @param subAction if the action is in sub menu, then provide it here
-   */
-  async performActionForElement(name: string, action: string, subAction?: string): Promise<void> {
-    await this.getActionsButtonByName(name).click();
-    await this.contextMenuActions.getButtonByText(action).click();
-
-    if (subAction) {
-      await this.contextMenuActions.getButtonByText(subAction).click();
-    }
-  }
-
-  /**
    * This method is used when we want to perform double click on the dataTable row to open a file or folder
    *
    * @param name of the data table element with which we want to double click
@@ -215,24 +150,19 @@ export class DataTableComponent extends BaseComponent {
     return this.contextMenuActions.getButtonByText(action);
   }
 
-  async performActionInExpandableMenu(name: string | number, action: string): Promise<void> {
-    await this.getRowByName(name).click({ button: 'right' });
-    await this.contextMenuActions.getButtonByText(action).click();
-  }
-
   async goThroughPagesLookingForRowWithName(name: string | number): Promise<void> {
     await this.spinnerWaitForReload();
     if (await this.getRowByName(name).isVisible()) {
-      return null;
+      return;
     }
 
     if (await this.pagination.currentPageLocator.isVisible()) {
       if ((await this.pagination.currentPageLocator.textContent()) === ' of 1 ') {
-        return null;
+        return;
       }
     }
     if (await this.pagination.totalPageLocator.isVisible()) {
-      const maxPages = (await this.pagination.totalPageLocator?.textContent())?.match(/\d/)[0];
+      const maxPages = (await this.pagination.totalPageLocator?.textContent())?.match(/\d+/)?.[0];
       for (let page = 1; page <= Number(maxPages); page++) {
         if (await this.getRowByName(name).isVisible()) {
           break;
@@ -251,15 +181,17 @@ export class DataTableComponent extends BaseComponent {
       if (!isSelected) {
         const row = this.getRowByName(name);
         await row.hover();
-        await row.locator(this.uncheckedCheckbox).click();
-        await row.locator(this.checkedCheckbox).waitFor({ state: 'visible', timeout: timeouts.large });
+        if (!(await this.getCheckboxForElement(name).isChecked())) {
+          await this.getCheckboxForElement(name).click();
+        }
       }
     }
   }
 
   async isRowSelected(itemName: string): Promise<boolean> {
     const row = this.getRowByName(itemName);
-    return row.locator(this.checkedCheckbox).isVisible();
+    await row.hover();
+    return this.getCheckboxForElement(itemName).isChecked();
   }
 
   async getColumnHeaders(): Promise<Array<string>> {
@@ -277,14 +209,14 @@ export class DataTableComponent extends BaseComponent {
   }
 
   async getItemLocationText(name: string): Promise<string> {
-    await this.getItemLocationEl(name).locator('a').waitFor({ state: 'attached' });
+    await this.getItemLocationEl(name).waitFor({ state: 'attached' });
     return this.getItemLocationEl(name).innerText();
   }
 
   async getItemLocationTooltip(name: string): Promise<string> {
     const location = this.getItemLocationEl(name);
     await location.hover();
-    return location.locator('a').getAttribute('title', { timeout: timeouts.normal });
+    return (await location.locator('a').getAttribute('title', { timeout: timeouts.normal })) ?? '';
   }
 
   async clickItemLocation(name: string): Promise<void> {
@@ -292,7 +224,7 @@ export class DataTableComponent extends BaseComponent {
   }
 
   async getSortingOrder(): Promise<string> {
-    const str = await this.sortedColumnHeader.locator('../..').getAttribute('class');
+    const str = (await this.sortedColumnHeader.locator('../..').getAttribute('class')) ?? '';
     if (str.includes('asc')) {
       return 'asc';
     } else if (str.includes('desc')) {
@@ -334,11 +266,6 @@ export class DataTableComponent extends BaseComponent {
     await this.getCellByColumnNameAndRowItem(itemName, 'Name').click({ button: 'right' });
   }
 
-  async setPaginationTo50(): Promise<void> {
-    await this.paginationButton.click();
-    await this.paginationOptions.getByText('50').click();
-  }
-
   /**
    * Method used to create objects from names and visibility of sites from datatable
    *
@@ -348,10 +275,8 @@ export class DataTableComponent extends BaseComponent {
     const rowsCount = await this.sitesName.count();
     const sitesInfo: { [siteName: string]: string } = {};
     for (let i = 0; i < rowsCount; i++) {
-      let siteVisibilityText = await this.sitesVisibility.nth(i).textContent();
-      let siteNameText = await this.sitesName.nth(i).textContent();
-      siteVisibilityText = siteVisibilityText.trim().toUpperCase();
-      siteNameText = siteNameText.trim();
+      const siteVisibilityText = ((await this.sitesVisibility.nth(i).textContent()) ?? '').trim().toUpperCase();
+      const siteNameText = ((await this.sitesName.nth(i).textContent()) ?? '').trim();
       sitesInfo[siteNameText] = siteVisibilityText;
     }
     return sitesInfo;
@@ -366,18 +291,11 @@ export class DataTableComponent extends BaseComponent {
     const rowsCount = await this.sitesName.count();
     const sitesInfo: { [siteName: string]: string } = {};
     for (let i = 0; i < rowsCount; i++) {
-      let siteNameText = await this.sitesName.nth(i).textContent();
-      let siteRoleText = await this.sitesRole.nth(i).textContent();
-      siteNameText = siteNameText.trim();
-      siteRoleText = siteRoleText.trim();
+      const siteNameText = ((await this.sitesName.nth(i).textContent()) ?? '').trim();
+      const siteRoleText = ((await this.sitesRole.nth(i).textContent()) ?? '').trim();
       sitesInfo[siteNameText] = siteRoleText;
     }
     return sitesInfo;
-  }
-
-  async hasLockIcon(itemName: string): Promise<boolean> {
-    const row = this.getRowByName(itemName);
-    return row.locator('img[src*="lock"]').isVisible();
   }
 
   async getLockOwner(itemName: string): Promise<string> {

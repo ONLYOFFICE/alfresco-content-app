@@ -22,7 +22,7 @@
  * from Hyland Software. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { SelectionState } from '@alfresco/adf-extensions';
@@ -32,15 +32,14 @@ import { CommonModule } from '@angular/common';
 import { DocumentListService, NodeFavoriteDirective } from '@alfresco/adf-content-services';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslatePipe } from '@ngx-translate/core';
-import { MatMenuModule } from '@angular/material/menu';
+import { MatMenuItem, MatMenuModule } from '@angular/material/menu';
 
 @Component({
   imports: [CommonModule, TranslatePipe, MatIconModule, MatMenuModule, NodeFavoriteDirective],
   selector: 'app-toggle-favorite',
   template: `
     <button mat-menu-item #favorites="adfFavorite" (toggle)="onToggleEvent()" [adf-node-favorite]="(selection$ | async).nodes">
-      <mat-icon *ngIf="favorites.hasFavorites()">star</mat-icon>
-      <mat-icon *ngIf="!favorites.hasFavorites()">star_border</mat-icon>
+      <mat-icon class="app-context-menu-item--icon">{{ favorites.hasFavorites() ? 'star' : 'star_border' }}</mat-icon>
       <span>{{ (favorites.hasFavorites() ? 'APP.ACTIONS.REMOVE_FAVORITE' : 'APP.ACTIONS.FAVORITE') | translate }}</span>
     </button>
   `,
@@ -48,26 +47,31 @@ import { MatMenuModule } from '@angular/material/menu';
   host: { class: 'app-toggle-favorite' }
 })
 export class ToggleFavoriteComponent implements OnInit {
-  private documentListService = inject(DocumentListService);
+  private readonly store = inject<Store<AppStore>>(Store);
+  private readonly router = inject(Router);
+
+  private readonly documentListService = inject(DocumentListService);
 
   @Input() data: any;
   selection$: Observable<SelectionState>;
   private reloadOnRoutes: string[] = [];
 
-  constructor(
-    private store: Store<AppStore>,
-    private router: Router
-  ) {
+  @ViewChild(MatMenuItem)
+  menuItem: MatMenuItem;
+
+  constructor() {
     this.selection$ = this.store.select(getAppSelection);
   }
 
   ngOnInit() {
-    if (this.data) {
-      this.reloadOnRoutes = JSON.parse(this.data.replace(/'/g, '"'));
-    }
+    this.reloadOnRoutes = this.data?.routes ?? [];
   }
 
   onToggleEvent() {
+    const focusAfterClosed = this.data?.focusAfterClosed;
+    if (focusAfterClosed) {
+      document.querySelector<HTMLElement>(focusAfterClosed)?.focus();
+    }
     if (this.reloadOnRoutes.includes(this.router.url)) {
       this.documentListService.reload();
     }

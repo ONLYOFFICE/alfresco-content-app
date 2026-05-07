@@ -19,7 +19,13 @@
         "DESCRIPTION": "Opis",
         "WHEN": "Kiedy",
         "PERFORM_ACTIONS": "Wykonaj czynności",
-        "OPTIONS": "Inne opcje"
+        "OPTIONS": "Inne opcje",
+        "FIELD": "Pole",
+        "COMPARATOR": "Komparator",
+        "VALUE": "Wartość",
+        "LOGIC_OPERATOR": "Operator logiczny",
+        "GROUP_CONDITIONS": "Warunki grupy",
+        "CONDITIONS": "Warunki"
       },
       "PLACEHOLDER": {
         "NAME": "Wprowadź nazwę reguły",
@@ -31,7 +37,8 @@
       "ERROR": {
         "REQUIRED": "To pole jest wymagane.",
         "RULE_COMPOSITE_CONDITION_INVALID": "Co najmniej jedna grupa warunków jest pusta",
-        "INSUFFICIENT_TRIGGERS_SELECTED": "Co najmniej jeden wyzwalacz jest wymagany"
+        "INSUFFICIENT_TRIGGERS_SELECTED": "Co najmniej jeden wyzwalacz jest wymagany",
+        "ACTION_REQUIRED": "Pole działania jest wymagane"
       },
       "TRIGGERS": {
         "INBOUND": "Pozycje są utworzone lub wejdź do tego folderu",
@@ -124,9 +131,10 @@
       "LOAD_MORE_RULE_SETS": "Wczytaj reguły z innych folderów",
       "LOAD_MORE_RULES": "Wczytaj więcej reguł",
       "LOADING_RULES": "Wczytywanie reguł",
-      "TOGGLE_RULE_STATE": "Przełącz status włączonej reguły",
+      "TOGGLE_RULE_STATE": "Przełącz regułę {{ name }}",
       "INHERITED_RULES_WILL_BE_RUN_FIRST": "Odziedziczone reguły zostaną wykonane najpierw",
-      "ALL_LINKED_RULES_ARE_DISABLED": "Wszystkie reguły z łączem z tego zbioru reguł są wyłączone"
+      "ALL_LINKED_RULES_ARE_DISABLED": "Wszystkie reguły z łączem z tego zbioru reguł są wyłączone",
+      "EDIT_LINK_LABEL": "Zasady dotyczące linków z innego folderu"
     },
     "LINK_RULES_DIALOG": {
       "TITLE": "Wybierz folder, z którego mają być łączone reguły",

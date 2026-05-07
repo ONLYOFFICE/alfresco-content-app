@@ -22,20 +22,29 @@
  * from Hyland Software. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { Injectable, inject } from '@angular/core';
+import { PRIMARY_OUTLET, Router, UrlSegment, UrlSegmentGroup, UrlTree } from '@angular/router';
+import { extractSearchedWordFromEncodedQuery } from '../../utils/aca-search-utils';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SearchNavigationService {
+  private readonly router = inject(Router);
+
   private _previousRoute = '';
 
   get previousRoute(): string {
     return this._previousRoute;
   }
 
-  constructor(private router: Router) {}
+  get onLibrariesSearchResults(): boolean {
+    return this.router?.url.indexOf('/search-libraries') === 0;
+  }
+
+  get onSearchResults(): boolean {
+    return !this.onLibrariesSearchResults && this.router?.url.indexOf('/search') === 0;
+  }
 
   saveRoute(route: string): void {
     this._previousRoute = route;
@@ -52,5 +61,25 @@ export class SearchNavigationService {
   navigateToSearch(): void {
     this.saveRoute(this.router.url);
     this.router.navigate(['/search']);
+  }
+
+  getUrlSearchTerm(): string {
+    if (!this.onSearchResults && !this.onLibrariesSearchResults) {
+      return '';
+    }
+
+    const urlTree: UrlTree = this.router.parseUrl(this.router.url);
+    const urlSegmentGroup: UrlSegmentGroup = urlTree.root.children[PRIMARY_OUTLET];
+
+    if (urlSegmentGroup) {
+      const urlSegments: UrlSegment[] = urlSegmentGroup.segments;
+      return extractSearchedWordFromEncodedQuery(urlSegments[0].parameters['q']);
+    }
+
+    return '';
+  }
+
+  isSameSearchTerm(searchedWord: string): boolean {
+    return searchedWord === this.getUrlSearchTerm();
   }
 }

@@ -1,6 +1,10 @@
 @import '../../../ui/mixins';
 
 aca-search-results {
+  .aca-content-header {
+    overflow-x: auto;
+  }
+
   .aca-search-results-active-search-ai-input {
     .aca-header-container,
     .adf-search-results__content-header.aca-content {
@@ -8,8 +12,8 @@ aca-search-results {
     }
   }
 
-  .aca-search-toolbar-spacer {
-    width: 100%;
+  .aca-search-results__toolbar-actions {
+    margin-left: 8px;
   }
 
   .adf-search-results {
@@ -144,8 +148,12 @@ aca-search-results {
         }
       }
 
-      &__divider {
+      &__divider-vertical {
         height: 100%;
+      }
+
+      &__divider-horizontal {
+        width: 100%;
       }
 
       &__advanced-filters {
@@ -186,6 +194,20 @@ aca-search-results {
         text-align: left;
         direction: rtl;
       }
+    }
+  }
+
+  @media (max-width: 320px) {
+    .adf-search-results__content-header {
+      flex-direction: column;
+    }
+
+    .adf-search-results__content {
+      overflow-y: auto;
+    }
+
+    .adf-document-list {
+      min-height: unset;
     }
   }
 }
